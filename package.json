@@ -1,0 +1,10 @@
+{
+  "name": "jest-pdf-snapshot",
+  "version": "0.0.1",
+  "description": "Jest matcher for pdf comparison",
+  "main": "index.js",
+  "repository": "https://github.com/zeptometer/Tsingtao.git",
+  "author": "Yuito Murase <yuito@acupof.coffee>",
+  "license": "MIT",
+  "private": true
+}
