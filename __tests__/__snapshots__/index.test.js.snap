@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`toMatchPdfSnapshot should throw an error if used with .not matcher 1`] = `"Jest: \`.not\` cannot be used with \`.toMatchPdfSnapshot()\`."`;
