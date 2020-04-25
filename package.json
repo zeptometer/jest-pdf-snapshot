@@ -6,5 +6,11 @@
   "repository": "https://github.com/zeptometer/Tsingtao.git",
   "author": "Yuito Murase <yuito@acupof.coffee>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^25.4.0"
+  }
 }
