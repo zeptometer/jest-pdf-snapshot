@@ -14,7 +14,7 @@ describe('toMatchPdfSnapshot', () => {
       .toThrowErrorMatchingSnapshot();
   });
 
-  it('should pass when snapshot is same as baseline snapshot', () => {
+  it('should pass when the actual is same as the snapshot', () => {
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: true,
       diffOutputPath: 'path/to/result.png',
@@ -27,7 +27,7 @@ describe('toMatchPdfSnapshot', () => {
       .not.toThrow();
   });
 
-  it('should fail when snapshot has a difference', () => {
+  it('should fail when the acutual has a difference from the snapshot', () => {
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: false,
       diffOutputPath: 'path/to/result.png',

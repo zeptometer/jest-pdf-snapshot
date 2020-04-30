@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`toMatchPdfSnapshot should fail when snapshot has a difference 1`] = `
+exports[`toMatchPdfSnapshot should fail when the acutual has a difference from the snapshot 1`] = `
 "Expected pdf to be same as the snapshot, but was different.
 [1m[31mSee diff for details:[39m[22m [31mpath/to/result.png[39m"
 `;
