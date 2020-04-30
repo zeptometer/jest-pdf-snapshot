@@ -3,7 +3,7 @@
 describe('toMatchPdfSnapshot', () => {
   const mockDiffPdfToSnapshot = jest.fn();
   jest.mock('../src/diff-snapshot', () => ({
-    runDiffImageToSnapshot: mockDiffPdfToSnapshot,
+    diffPdfToSnapshot: mockDiffPdfToSnapshot,
   }));
 
   it('should throw an error if used with .not matcher', () => {
@@ -25,5 +25,18 @@ describe('toMatchPdfSnapshot', () => {
 
     expect(() => expect('pretendthisisanimagebuffer').toMatchPdfSnapshot())
       .not.toThrow();
+  });
+
+  it('should fail when snapshot has a difference', () => {
+    mockDiffPdfToSnapshot.mockReturnValue({
+      pass: false,
+      diffOutputPath: 'path/to/result.png',
+    });
+
+    const { toMatchPdfSnapshot } = require('../src/index');
+    expect.extend({ toMatchPdfSnapshot });
+
+    expect(() => expect('pretendthisisanimagebuffer').toMatchPdfSnapshot())
+      .toThrowErrorMatchingSnapshot();
   });
 });

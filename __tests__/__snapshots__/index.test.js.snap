@@ -1,3 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`toMatchPdfSnapshot should fail when snapshot has a difference 1`] = `
+"Expected pdf to be same as the snapshot, but was different.
+[1m[31mSee diff for details:[39m[22m [31mpath/to/result.png[39m"
+`;
+
 exports[`toMatchPdfSnapshot should throw an error if used with .not matcher 1`] = `"Jest: \`.not\` cannot be used with \`.toMatchPdfSnapshot()\`."`;
