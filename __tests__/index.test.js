@@ -6,21 +6,33 @@ describe('toMatchPdfSnapshot', () => {
     diffPdfToSnapshot: mockDiffPdfToSnapshot,
   }));
 
-  const mockFs = ({
-    existsSync: jest.fn(),
-  });
-  jest.mock('fs', () => mockFs);
+  let mockTestContext;
 
   beforeEach(() => {
     mockDiffPdfToSnapshot.mockReset();
-    mockFs.existsSync.mockReset();
+    mockTestContext = {
+      testPath: 'path/to/test.spec.js',
+      currentTestName: 'test1',
+      isNot: false,
+      snapshotState: {
+        _counters: new Map(),
+        _updateSnapshot: 'new',
+        matched: 0,
+        unmatched: 0,
+        updated: 0,
+        added: 0,
+      },
+    };
   });
 
   it('should throw an error if used with .not matcher', () => {
-    const { toMatchPdfSnapshot } = require('../src/index');
-    expect.extend({ toMatchPdfSnapshot });
+    mockTestContext.isNot = true;
 
-    expect(() => expect('path to pdf file').not.toMatchPdfSnapshot())
+    const { toMatchPdfSnapshot } = require('../src/index');
+    const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
+
+
+    expect(() => matcherAtTest('pretendthisisanimagebuffer'))
       .toThrowErrorMatchingSnapshot();
   });
 
@@ -33,45 +45,54 @@ describe('toMatchPdfSnapshot', () => {
     });
 
     const { toMatchPdfSnapshot } = require('../src/index');
-    expect.extend({ toMatchPdfSnapshot });
+    const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
 
-    expect(() => expect('pretendthisisanimagebuffer').toMatchPdfSnapshot())
-      .not.toThrow();
+
+    const result = matcherAtTest('pretendthisisanimagebuffer');
+
+
+    expect(result).toHaveProperty('pass', true);
+    expect(mockTestContext.snapshotState).toHaveProperty('matched', 1);
+    expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
+      updateSnapshot: false,
+      addSnapshot: true,
+    });
   });
 
   it('should fail when the acutual has a difference from the snapshot', () => {
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: false,
-      diffOutputPath: 'path/to/result.png',
+      failureType: 'MismatchSnapshot',
       updated: false,
       added: false,
+      diffOutputPath: 'path/to/result.png',
     });
 
     const { toMatchPdfSnapshot } = require('../src/index');
-    expect.extend({ toMatchPdfSnapshot });
+    const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
 
-    expect(() => expect('pretendthisisanimagebuffer').toMatchPdfSnapshot())
-      .toThrowErrorMatchingSnapshot();
+
+    const result = matcherAtTest('pretendthisisanimagebuffer');
+
+
+    expect(result).toHaveProperty('pass', false);
+    expect(result.message()).toMatchSnapshot();
+    expect(mockTestContext.snapshotState).toHaveProperty('unmatched', 1);
+    expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
+      updateSnapshot: false,
+      addSnapshot: true,
+    });
   });
 
   it('attempts to update snapshots if snapshotState has updateSnapshot flag set', () => {
-    const mockTestContext = {
-      testPath: 'path/to/test.spec.js',
-      currentTestName: 'test1',
-      isNot: false,
-      snapshotState: {
-        _counters: new Map(),
-        _updateSnapshot: 'all',
-        updated: 0,
-        added: 0,
-      },
-    };
+    // eslint-disable-next-line no-underscore-dangle
+    mockTestContext.snapshotState._updateSnapshot = 'all';
 
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: true,
-      diffOutputPath: 'path/to/result.png',
       updated: true,
       added: false,
+      diffOutputPath: 'path/to/result.png',
     });
 
     const { toMatchPdfSnapshot } = require('../src/index');
@@ -85,27 +106,16 @@ describe('toMatchPdfSnapshot', () => {
     expect(mockTestContext.snapshotState).toHaveProperty('updated', 1);
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
       updateSnapshot: true,
+      addSnapshot: true,
     });
   });
 
   it('should work when a new snapshot is added', () => {
-    const mockTestContext = {
-      testPath: 'path/to/test.spec.js',
-      currentTestName: 'test1',
-      isNot: false,
-      snapshotState: {
-        _counters: new Map(),
-        _updateSnapshot: 'new',
-        updatred: 0,
-        added: 0,
-      },
-    };
-
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: true,
-      diffOutputPath: 'path/to/result.png',
       updated: false,
       added: true,
+      diffOutputPath: 'path/to/result.png',
     });
 
     const { toMatchPdfSnapshot } = require('../src/index');
@@ -119,6 +129,34 @@ describe('toMatchPdfSnapshot', () => {
     expect(mockTestContext.snapshotState).toHaveProperty('added', 1);
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
       updateSnapshot: false,
+      addSnapshot: true,
+    });
+  });
+
+  it('should fail when a new snapshot is added in ci', () => {
+    // eslint-disable-next-line no-underscore-dangle
+    mockTestContext.snapshotState._updateSnapshot = 'none';
+
+    mockDiffPdfToSnapshot.mockReturnValue({
+      pass: false,
+      failureType: 'EmptySnapshot',
+      updated: false,
+      added: false,
+      diffOutputPath: 'path/to/result.png',
+    });
+
+    const { toMatchPdfSnapshot } = require('../src/index');
+    const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
+
+
+    const result = matcherAtTest('pretendthisisanimagebuffer');
+
+
+    expect(result).toHaveProperty('pass', false);
+    expect(result.message()).toMatchSnapshot();
+    expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
+      updateSnapshot: false,
+      addSnapshot: false,
     });
   });
 });
