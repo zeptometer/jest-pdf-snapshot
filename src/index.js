@@ -1,20 +1,45 @@
 const chalk = require('chalk');
+const kebabCase = require('lodash/kebabCase');
+const path = require('path');
+
 const { diffPdfToSnapshot } = require('./diff-snapshot');
+
+const SNAPSHOTS_DIR = '__pdf_snapshots__';
+
+function createSnapshotIdentifier({
+  testPath,
+  currentTestName,
+  snapshotState,
+}) {
+  // eslint-disable-next-line no-underscore-dangle
+  const counter = snapshotState._counters.get(currentTestName);
+  return kebabCase(`${path.basename(testPath)}-${currentTestName}-${counter}`);
+}
 
 // eslint-disable-next-line no-unused-vars
 function toMatchPdfSnapshot(_received) {
-  const { snapshotState, isNot } = this;
+  const {
+    testPath, currentTestName, snapshotState, isNot,
+  } = this;
 
   if (isNot) {
     throw new Error('Jest: `.not` cannot be used with `.toMatchPdfSnapshot()`.');
   }
 
+  const snapshotDir = path.join(path.dirname(testPath), SNAPSHOTS_DIR);
+  const snapshotIdentifier = createSnapshotIdentifier({
+    testPath,
+    currentTestName,
+    snapshotState,
+  });
   // eslint-disable-next-line no-underscore-dangle
   const updateSnapshot = snapshotState._updateSnapshot === 'all';
   // eslint-disable-next-line no-underscore-dangle
-  const addSnapshot = snapshotState._updateSnapshot === 'all' || snapshotState._updateSnapshot === 'new';
+  const addSnapshot = ['all', 'new'].includes(snapshotState._updateSnapshot);
 
   const result = diffPdfToSnapshot({
+    snapshotDir,
+    snapshotIdentifier,
     updateSnapshot,
     addSnapshot,
   });
@@ -26,14 +51,9 @@ function toMatchPdfSnapshot(_received) {
     added,
   } = result;
 
-  let message = () => '';
-
-  if (updated) {
-    snapshotState.updated += 1;
-  } else if (added) {
-    snapshotState.added += 1;
-  } else if (!pass) {
+  if (!pass) {
     snapshotState.unmatched += 1;
+    let message;
 
     switch (result.failureType) {
       case 'MismatchSnapshot':
@@ -54,11 +74,19 @@ function toMatchPdfSnapshot(_received) {
       default:
         throw new Error('Got unexpected failure type');
     }
+
+    return { pass, message };
+  }
+
+  if (updated) {
+    snapshotState.updated += 1;
+  } else if (added) {
+    snapshotState.added += 1;
   } else {
     snapshotState.matched += 1;
   }
 
-  return { pass, message };
+  return { pass, message: () => '' };
 }
 
 module.exports = {
