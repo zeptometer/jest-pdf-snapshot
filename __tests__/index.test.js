@@ -6,15 +6,20 @@ describe('toMatchPdfSnapshot', () => {
     diffPdfToSnapshot: mockDiffPdfToSnapshot,
   }));
 
-  const mockMkdirSync = jest.fn();
-  jest.mock('fs', () => ({
-    mkdirSync: mockMkdirSync,
-  }));
+  const mockFs = {
+    existsSync: jest.fn(),
+    mkdirSync: jest.fn(),
+  };
+  jest.mock('fs', () => mockFs);
 
   let mockTestContext;
 
   beforeEach(() => {
     mockDiffPdfToSnapshot.mockReset();
+    mockFs.existsSync.mockReset();
+    mockFs.existsSync.mockReturnValue(true);
+    mockFs.mkdirSync.mockReset();
+
     mockTestContext = {
       testPath: 'path/to/test.spec.js',
       currentTestName: 'test1',
@@ -55,13 +60,28 @@ describe('toMatchPdfSnapshot', () => {
       .toThrowErrorMatchingSnapshot();
   });
 
-  // it('should create snapshot directory if not present', () => {
-  // })
+  it('should create snapshot directory if not present', () => {
+    mockDiffPdfToSnapshot.mockReturnValue({
+      pass: true,
+      updated: false,
+      added: true,
+    });
+    mockFs.existsSync.mockReturnValue(false);
+
+    const { toMatchPdfSnapshot } = require('../src/index');
+    const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
+
+
+    matcherAtTest('path/to/pdf');
+
+
+    expect(mockFs.existsSync).toHaveBeenCalledWith('path/to/__pdf_snapshots__');
+    expect(mockFs.mkdirSync).toHaveBeenCalledWith('path/to/__pdf_snapshots__');
+  });
 
   it('should pass when the actual is same as the snapshot', () => {
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: true,
-      diffOutputPath: 'path/to/result.png',
       updated: false,
       added: false,
     });

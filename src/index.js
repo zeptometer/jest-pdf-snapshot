@@ -28,6 +28,11 @@ function toMatchPdfSnapshot(received) {
   }
 
   const snapshotDir = path.join(path.dirname(testPath), SNAPSHOTS_DIR);
+
+  if (!fs.existsSync(snapshotDir)) {
+    fs.mkdirSync(snapshotDir);
+  }
+
   const snapshotIdentifier = createSnapshotIdentifier({
     testPath,
     currentTestName,
