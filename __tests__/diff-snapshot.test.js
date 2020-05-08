@@ -99,4 +99,34 @@ describe('diffPdfToSnapshot', () => {
     expect(result.updated).toBe(false);
     expect(result.added).toBe(false);
   });
+
+  it('should create diff output path when not present', () => {
+    expect(true).toBe(true); // FIXME
+  });
+
+  it('should give path to diff file when files are different', () => {
+    const { diffPdfToSnapshot } = require('../src/diff-snapshot');
+
+    mockExistsSync.mockReturnValue(true);
+    mockChecksumComparator.mockReturnValue(false);
+
+
+    const result = diffPdfToSnapshot({
+      pdfPath: 'path/to/pdf',
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: undefined,
+      addSnapshot: false,
+    }, mockedDependency);
+
+
+    expect(result.pass).toBe(false);
+    expect(result.failureType).toBe('MismatchSnapshot');
+    expect(result.diffOutputPath).toBe('snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf');
+    expect(mockDiffRunner).toHaveBeenCalledWith(
+      'path/to/pdf',
+      'snapshotDir/snapshotIdentifier.pdf',
+      'snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf',
+    );
+  });
 });

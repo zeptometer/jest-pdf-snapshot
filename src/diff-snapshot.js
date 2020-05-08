@@ -1,11 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 
+const DIFF_OUTPUT_DIR = '__diff_output__';
+
 function compareChecksum(_source, _target) {
 
 }
 
-function runDiffPdf(_source, _target) {
+function runDiffPdf(_source, _target, _diffOutputPath) {
 
 }
 
@@ -46,7 +48,15 @@ function diffPdfToSnapshot({
   }
 
   if (!checksumComparator(pdfPath, snapshotPath)) {
-    return {};
+    const diffOutputPath = path.join(snapshotDir, DIFF_OUTPUT_DIR, `${snapshotIdentifier}-diff.pdf`);
+
+    diffRunner(pdfPath, snapshotPath, diffOutputPath);
+
+    return {
+      pass: false,
+      failureType: 'MismatchSnapshot',
+      diffOutputPath,
+    };
   }
 
   return {
