@@ -1,14 +1,17 @@
+const shell = require('shelljs');
 const fs = require('fs');
 const path = require('path');
 
 const DIFF_OUTPUT_DIR = '__diff_output__';
 
-function compareChecksum(_source, _target) {
+shell.config.fatal = true;
 
+function checkDiff(source, target) {
+  return shell.exec(`diff-pdf ${source} ${target}`).code === 0;
 }
 
-function runDiffPdf(_source, _target, _diffOutputPath) {
-
+function generateDiff(source, target, diffOutput) {
+  return shell.exec(`diff-pdf --output=${diffOutput} ${source} ${target}`).code === 1;
 }
 
 function diffPdfToSnapshot({
@@ -18,8 +21,8 @@ function diffPdfToSnapshot({
   updateSnapshot,
   addSnapshot,
 }, {
-  checksumComparator = compareChecksum,
-  diffRunner = runDiffPdf,
+  diffChecker = checkDiff,
+  diffGenerator = generateDiff,
 } = {}) {
   if (!fs.existsSync(pdfPath)) {
     return {
@@ -47,7 +50,7 @@ function diffPdfToSnapshot({
     };
   }
 
-  if (!checksumComparator(pdfPath, snapshotPath)) {
+  if (!diffChecker(pdfPath, snapshotPath)) {
     const diffOutputDir = path.join(snapshotDir, DIFF_OUTPUT_DIR);
 
     if (!fs.existsSync(diffOutputDir)) {
@@ -56,7 +59,7 @@ function diffPdfToSnapshot({
 
     const diffOutputPath = path.join(diffOutputDir, `${snapshotIdentifier}-diff.pdf`);
 
-    diffRunner(pdfPath, snapshotPath, diffOutputPath);
+    diffGenerator(pdfPath, snapshotPath, diffOutputPath);
 
     return {
       pass: false,

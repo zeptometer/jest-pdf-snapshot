@@ -8,19 +8,19 @@ describe('diffPdfToSnapshot', () => {
   };
   jest.mock('fs', () => mockFs);
 
-  const mockChecksumComparator = jest.fn();
-  const mockDiffRunner = jest.fn();
+  const mockDiffChecker = jest.fn();
+  const mockDiffGenerator = jest.fn();
   const mockedDependency = {
-    checksumComparator: mockChecksumComparator,
-    diffRunner: mockDiffRunner,
+    diffChecker: mockDiffChecker,
+    diffGenerator: mockDiffGenerator,
   };
 
   beforeEach(() => {
     mockFs.copyFileSync.mockReset();
     mockFs.existsSync.mockReset();
     mockFs.mkdirSync.mockReset();
-    mockChecksumComparator.mockReset();
-    mockDiffRunner.mockReset();
+    mockDiffChecker.mockReset();
+    mockDiffGenerator.mockReset();
   });
 
   it('should fail when pdfPath is not present', () => {
@@ -84,7 +84,7 @@ describe('diffPdfToSnapshot', () => {
     const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
     mockFs.existsSync.mockReturnValue(true);
-    mockChecksumComparator.mockReturnValue(true);
+    mockDiffChecker.mockReturnValue(true);
 
 
     const result = diffPdfToSnapshot({
@@ -108,7 +108,7 @@ describe('diffPdfToSnapshot', () => {
       .mockReturnValueOnce(true)
       .mockReturnValueOnce(true)
       .mockReturnValueOnce(false);
-    mockChecksumComparator.mockReturnValue(false);
+    mockDiffChecker.mockReturnValue(false);
 
 
     diffPdfToSnapshot({
@@ -127,7 +127,7 @@ describe('diffPdfToSnapshot', () => {
     const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
     mockFs.existsSync.mockReturnValue(true);
-    mockChecksumComparator.mockReturnValue(false);
+    mockDiffChecker.mockReturnValue(false);
 
 
     const result = diffPdfToSnapshot({
@@ -142,7 +142,7 @@ describe('diffPdfToSnapshot', () => {
     expect(result.pass).toBe(false);
     expect(result.failureType).toBe('MismatchSnapshot');
     expect(result.diffOutputPath).toBe('snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf');
-    expect(mockDiffRunner).toHaveBeenCalledWith(
+    expect(mockDiffGenerator).toHaveBeenCalledWith(
       'path/to/pdf',
       'snapshotDir/snapshotIdentifier.pdf',
       'snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf',
