@@ -46,6 +46,21 @@ describe('toMatchPdfSnapshot', () => {
       .toThrowErrorMatchingSnapshot();
   });
 
+  it('should thrown an error when diff-pdf is not available', () => {
+    mockDiffPdfToSnapshot.mockReturnValue({
+      pass: false,
+      failureType: 'DiffPdfNotFound',
+    });
+
+    const { toMatchPdfSnapshot } = require('../src/index');
+    const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
+
+
+    expect(() => matcherAtTest('path/to/pdf'))
+      .toThrowErrorMatchingSnapshot();
+  });
+
+
   it('should thrown an error when given pdf path is not present', () => {
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: false,

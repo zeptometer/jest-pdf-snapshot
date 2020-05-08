@@ -8,6 +8,12 @@ describe('diffPdfToSnapshot', () => {
   };
   jest.mock('fs', () => mockFs);
 
+  const mockShell = {
+    exec: jest.fn(),
+    config: {},
+  };
+  jest.mock('shelljs', () => mockShell);
+
   const mockDiffChecker = jest.fn();
   const mockDiffGenerator = jest.fn();
   const mockedDependency = {
@@ -19,8 +25,31 @@ describe('diffPdfToSnapshot', () => {
     mockFs.copyFileSync.mockReset();
     mockFs.existsSync.mockReset();
     mockFs.mkdirSync.mockReset();
+    mockShell.exec.mockReset();
     mockDiffChecker.mockReset();
     mockDiffGenerator.mockReset();
+
+    mockShell.exec.mockReturnValue({ code: 0 });
+  });
+
+  it('should fail when diff-pdf is not found', () => {
+    const { diffPdfToSnapshot } = require('../src/diff-snapshot');
+
+    mockFs.existsSync.mockReturnValue(false);
+    mockShell.exec.mockReturnValueOnce({ code: 127 });
+
+
+    const result = diffPdfToSnapshot({
+      pdfPath: 'path/to/pdf',
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: undefined,
+      addSnapshot: undefined,
+    });
+
+
+    expect(result.pass).toBe(false);
+    expect(result.failureType).toBe('DiffPdfNotFound');
   });
 
   it('should fail when pdfPath is not present', () => {

@@ -24,6 +24,13 @@ function diffPdfToSnapshot({
   diffChecker = checkDiff,
   diffGenerator = generateDiff,
 } = {}) {
+  if (shell.exec('diff-pdf -h').code !== 0) {
+    return {
+      pass: false,
+      failureType: 'DiffPdfNotFound',
+    };
+  }
+
   if (!fs.existsSync(pdfPath)) {
     return {
       pass: false,
