@@ -27,10 +27,6 @@ function toMatchPdfSnapshot(received) {
     throw new Error('Jest: `.not` cannot be used with `.toMatchPdfSnapshot()`.');
   }
 
-  if (!fs.existsSync(testPath)) {
-    throw new Error(`Jest: given path to \`.toMatchPdfSnapshot()\` is not present: ${received}`);
-  }
-
   const snapshotDir = path.join(path.dirname(testPath), SNAPSHOTS_DIR);
   const snapshotIdentifier = createSnapshotIdentifier({
     testPath,
@@ -62,18 +58,21 @@ function toMatchPdfSnapshot(received) {
     let message;
 
     switch (result.failureType) {
-      case 'MismatchSnapshot':
-        message = () => (
-          'Expected pdf to be same as the snapshot, but was different.\n'
-          + `${chalk.bold.red('See diff for details:')} ${chalk.red(diffOutputPath)}`
-        );
-        break;
+      case 'SourcePdfNotPresent':
+        throw new Error(`Jest: given path to \`.toMatchPdfSnapshot()\` is not present: ${received}`);
 
       case 'EmptySnapshot':
         message = () => (
           `New snapshot was ${chalk.bold.red('not written')}. The update flag must be explicitly `
           + 'passed to write a new snapshot.\n\n + This is likely because this test is run in a continuous '
           + 'integration (CI) environment in which snapshots are not written by default.'
+        );
+        break;
+
+      case 'MismatchSnapshot':
+        message = () => (
+          'Expected pdf to be same as the snapshot, but was different.\n'
+          + `${chalk.bold.red('See diff for details:')} ${chalk.red(diffOutputPath)}`
         );
         break;
 

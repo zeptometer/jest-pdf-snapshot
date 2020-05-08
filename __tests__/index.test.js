@@ -6,9 +6,9 @@ describe('toMatchPdfSnapshot', () => {
     diffPdfToSnapshot: mockDiffPdfToSnapshot,
   }));
 
-  const mockExistsSync = jest.fn();
+  const mockMkdirSync = jest.fn();
   jest.mock('fs', () => ({
-    existsSync: mockExistsSync,
+    mkdirSync: mockMkdirSync,
   }));
 
   let mockTestContext;
@@ -46,7 +46,6 @@ describe('toMatchPdfSnapshot', () => {
       pass: false,
       failureType: 'SourcePdfNotPresent',
     });
-    mockExistsSync.mockReturnValue(false);
 
     const { toMatchPdfSnapshot } = require('../src/index');
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
@@ -56,6 +55,8 @@ describe('toMatchPdfSnapshot', () => {
       .toThrowErrorMatchingSnapshot();
   });
 
+  // it('should create snapshot directory if not present', () => {
+  // })
 
   it('should pass when the actual is same as the snapshot', () => {
     mockDiffPdfToSnapshot.mockReturnValue({
@@ -64,7 +65,6 @@ describe('toMatchPdfSnapshot', () => {
       updated: false,
       added: false,
     });
-    mockExistsSync.mockReturnValue(true);
 
     const { toMatchPdfSnapshot } = require('../src/index');
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
@@ -92,7 +92,6 @@ describe('toMatchPdfSnapshot', () => {
       added: false,
       diffOutputPath: 'path/to/result.png',
     });
-    mockExistsSync.mockReturnValue(true);
 
     const { toMatchPdfSnapshot } = require('../src/index');
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
@@ -123,7 +122,6 @@ describe('toMatchPdfSnapshot', () => {
       added: false,
       diffOutputPath: 'path/to/result.png',
     });
-    mockExistsSync.mockReturnValue(true);
 
     const { toMatchPdfSnapshot } = require('../src/index');
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
@@ -150,7 +148,6 @@ describe('toMatchPdfSnapshot', () => {
       added: true,
       diffOutputPath: 'path/to/result.png',
     });
-    mockExistsSync.mockReturnValue(true);
 
     const { toMatchPdfSnapshot } = require('../src/index');
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
@@ -181,7 +178,6 @@ describe('toMatchPdfSnapshot', () => {
       added: false,
       diffOutputPath: 'path/to/result.png',
     });
-    mockExistsSync.mockReturnValue(true);
 
     const { toMatchPdfSnapshot } = require('../src/index');
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);

@@ -99,8 +99,4 @@ describe('diffPdfToSnapshot', () => {
     expect(result.added).toBe(false);
     expect(result.added).toBe(false);
   });
-
-  it('should create snapshot directory when it is not present', () => {
-    expect(true).toBe(true); // FIXME
-  });
 });
