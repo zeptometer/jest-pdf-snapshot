@@ -13,4 +13,4 @@ exports[`toMatchPdfSnapshot should fail when the acutual has a difference from t
 
 exports[`toMatchPdfSnapshot should throw an error if used with .not matcher 1`] = `"Jest: \`.not\` cannot be used with \`.toMatchPdfSnapshot()\`."`;
 
-exports[`toMatchPdfSnapshot should thrown an error when given pdf path is not present 1`] = `"Jest: given path to \`.toMatchPdfSnapshot()\` is not present: path/to/test.spec.js"`;
+exports[`toMatchPdfSnapshot should thrown an error when given pdf path is not present 1`] = `"Jest: given path to \`.toMatchPdfSnapshot()\` is not present: path/to/pdf"`;

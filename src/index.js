@@ -28,7 +28,7 @@ function toMatchPdfSnapshot(received) {
   }
 
   if (!fs.existsSync(testPath)) {
-    throw new Error(`Jest: given path to \`.toMatchPdfSnapshot()\` is not present: ${testPath}`);
+    throw new Error(`Jest: given path to \`.toMatchPdfSnapshot()\` is not present: ${received}`);
   }
 
   const snapshotDir = path.join(path.dirname(testPath), SNAPSHOTS_DIR);
