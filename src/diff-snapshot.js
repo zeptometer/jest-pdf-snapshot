@@ -1,20 +1,28 @@
 const fs = require('fs');
 const path = require('path');
 
+function compareChecksum(_source, _target) {
+
+}
+
+function runDiffPdf(_source, _target) {
+
+}
+
 function diffPdfToSnapshot({
   pdfPath,
   snapshotDir,
   snapshotIdentifier,
   updateSnapshot,
   addSnapshot,
-}) {
+}, {
+  checksumComparator = compareChecksum,
+  diffRunner = runDiffPdf,
+} = {}) {
   if (!fs.existsSync(pdfPath)) {
     return {
       pass: false,
       failureType: 'SourcePdfNotPresent',
-      updated: false,
-      added: false,
-      diffOutputPath: undefined,
     };
   }
 
@@ -28,20 +36,24 @@ function diffPdfToSnapshot({
         pass: true,
         updated: false,
         added: true,
-        diffOutputPath: undefined,
       };
     }
 
     return {
       pass: false,
       failureType: 'EmptySnapshot',
-      updated: false,
-      added: false,
-      diffOutputPath: undefined,
     };
   }
 
-  return {};
+  if (!checksumComparator(pdfPath, snapshotPath)) {
+    return {};
+  }
+
+  return {
+    pass: true,
+    updated: false,
+    added: false,
+  };
 }
 
 module.exports = {

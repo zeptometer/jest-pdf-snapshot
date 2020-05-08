@@ -8,9 +8,18 @@ describe('diffPdfToSnapshot', () => {
     existsSync: mockExistsSync,
   }));
 
+  const mockChecksumComparator = jest.fn();
+  const mockDiffRunner = jest.fn();
+  const mockedDependency = {
+    checksumComparator: mockChecksumComparator,
+    diffRunner: mockDiffRunner,
+  };
+
   beforeEach(() => {
     mockCopyFileSync.mockReset();
     mockExistsSync.mockReset();
+    mockChecksumComparator.mockReset();
+    mockDiffRunner.mockReset();
   });
 
   it('should fail when pdfPath is not present', () => {
@@ -66,9 +75,29 @@ describe('diffPdfToSnapshot', () => {
     });
 
     expect(result.pass).toBe(false);
-    expect(result.added).toBe(false);
     expect(mockExistsSync).toHaveBeenCalledWith('snapshotDir/snapshotIdentifier.pdf');
     expect(mockCopyFileSync).not.toHaveBeenCalled();
+  });
+
+  it('should pass when given pdf is identical to snapshot', () => {
+    const { diffPdfToSnapshot } = require('../src/diff-snapshot');
+
+    mockExistsSync.mockReturnValue(true);
+    mockChecksumComparator.mockReturnValue(true);
+
+
+    const result = diffPdfToSnapshot({
+      pdfPath: 'path/to/pdf',
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: undefined,
+      addSnapshot: false,
+    }, mockedDependency);
+
+
+    expect(result.pass).toBe(true);
+    expect(result.added).toBe(false);
+    expect(result.added).toBe(false);
   });
 
   it('should create snapshot directory when it is not present', () => {
