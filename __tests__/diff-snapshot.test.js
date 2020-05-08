@@ -1,12 +1,12 @@
 /* eslint-disable global-require */
 
 describe('diffPdfToSnapshot', () => {
-  const mockCopyFileSync = jest.fn();
-  const mockExistsSync = jest.fn();
-  jest.mock('fs', () => ({
-    copyFileSync: mockCopyFileSync,
-    existsSync: mockExistsSync,
-  }));
+  const mockFs = {
+    copyFileSync: jest.fn(),
+    existsSync: jest.fn(),
+    mkdirSync: jest.fn(),
+  };
+  jest.mock('fs', () => mockFs);
 
   const mockChecksumComparator = jest.fn();
   const mockDiffRunner = jest.fn();
@@ -16,8 +16,9 @@ describe('diffPdfToSnapshot', () => {
   };
 
   beforeEach(() => {
-    mockCopyFileSync.mockReset();
-    mockExistsSync.mockReset();
+    mockFs.copyFileSync.mockReset();
+    mockFs.existsSync.mockReset();
+    mockFs.mkdirSync.mockReset();
     mockChecksumComparator.mockReset();
     mockDiffRunner.mockReset();
   });
@@ -25,7 +26,7 @@ describe('diffPdfToSnapshot', () => {
   it('should fail when pdfPath is not present', () => {
     const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
-    mockExistsSync.mockReturnValue(false);
+    mockFs.existsSync.mockReturnValue(false);
 
 
     const result = diffPdfToSnapshot({
@@ -39,13 +40,13 @@ describe('diffPdfToSnapshot', () => {
 
     expect(result.pass).toBe(false);
     expect(result.failureType).toBe('SourcePdfNotPresent');
-    expect(mockExistsSync).toHaveBeenCalledWith('path/to/pdf');
+    expect(mockFs.existsSync).toHaveBeenCalledWith('path/to/pdf');
   });
 
   it('should copy pdf to snapshot when addSnapshot is true and snapshot does not exist', () => {
     const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
-    mockExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
+    mockFs.existsSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
     const result = diffPdfToSnapshot({
       pdfPath: 'path/to/pdf',
@@ -57,14 +58,14 @@ describe('diffPdfToSnapshot', () => {
 
     expect(result.pass).toBe(true);
     expect(result.added).toBe(true);
-    expect(mockExistsSync).toHaveBeenCalledWith('snapshotDir/snapshotIdentifier.pdf');
-    expect(mockCopyFileSync).toHaveBeenCalledWith('path/to/pdf', 'snapshotDir/snapshotIdentifier.pdf');
+    expect(mockFs.existsSync).toHaveBeenCalledWith('snapshotDir/snapshotIdentifier.pdf');
+    expect(mockFs.copyFileSync).toHaveBeenCalledWith('path/to/pdf', 'snapshotDir/snapshotIdentifier.pdf');
   });
 
   it('should fail when addSnapthot is false and snapshot does not exist', () => {
     const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
-    mockExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
+    mockFs.existsSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
     const result = diffPdfToSnapshot({
       pdfPath: 'path/to/pdf',
@@ -75,14 +76,14 @@ describe('diffPdfToSnapshot', () => {
     });
 
     expect(result.pass).toBe(false);
-    expect(mockExistsSync).toHaveBeenCalledWith('snapshotDir/snapshotIdentifier.pdf');
-    expect(mockCopyFileSync).not.toHaveBeenCalled();
+    expect(mockFs.existsSync).toHaveBeenCalledWith('snapshotDir/snapshotIdentifier.pdf');
+    expect(mockFs.copyFileSync).not.toHaveBeenCalled();
   });
 
   it('should pass when given pdf is identical to snapshot', () => {
     const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
-    mockExistsSync.mockReturnValue(true);
+    mockFs.existsSync.mockReturnValue(true);
     mockChecksumComparator.mockReturnValue(true);
 
 
@@ -101,13 +102,31 @@ describe('diffPdfToSnapshot', () => {
   });
 
   it('should create diff output path when not present', () => {
-    expect(true).toBe(true); // FIXME
+    const { diffPdfToSnapshot } = require('../src/diff-snapshot');
+
+    mockFs.existsSync
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(true)
+      .mockReturnValueOnce(false);
+    mockChecksumComparator.mockReturnValue(false);
+
+
+    diffPdfToSnapshot({
+      pdfPath: 'path/to/pdf',
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: undefined,
+      addSnapshot: false,
+    }, mockedDependency);
+
+
+    expect(mockFs.mkdirSync).toHaveBeenCalledWith('snapshotDir/__diff_output__');
   });
 
   it('should give path to diff file when files are different', () => {
     const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
-    mockExistsSync.mockReturnValue(true);
+    mockFs.existsSync.mockReturnValue(true);
     mockChecksumComparator.mockReturnValue(false);
 
 

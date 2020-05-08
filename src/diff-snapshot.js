@@ -48,7 +48,13 @@ function diffPdfToSnapshot({
   }
 
   if (!checksumComparator(pdfPath, snapshotPath)) {
-    const diffOutputPath = path.join(snapshotDir, DIFF_OUTPUT_DIR, `${snapshotIdentifier}-diff.pdf`);
+    const diffOutputDir = path.join(snapshotDir, DIFF_OUTPUT_DIR);
+
+    if (!fs.existsSync(diffOutputDir)) {
+      fs.mkdirSync(diffOutputDir);
+    }
+
+    const diffOutputPath = path.join(diffOutputDir, `${snapshotIdentifier}-diff.pdf`);
 
     diffRunner(pdfPath, snapshotPath, diffOutputPath);
 
