@@ -1,14 +1,20 @@
+const fs = require('fs');
+
 function diffPdfToSnapshot({
-  pdfpath,
+  pdfPath,
   snapshotDir,
   snapshotIdentifier,
   updateSnapshot,
   addSnapshot,
 }) {
-  return {
-    pass: '',
-    diffOutputPath: '',
-  };
+  if (!fs.existsSync(pdfPath)) {
+    return {
+      pass: false,
+      failureType: 'SourcePdfNotPresent',
+    };
+  }
+
+  return {};
 }
 
 module.exports = {

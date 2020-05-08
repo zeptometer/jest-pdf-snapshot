@@ -1,4 +1,5 @@
 const chalk = require('chalk');
+const fs = require('fs');
 const kebabCase = require('lodash/kebabCase');
 const path = require('path');
 
@@ -24,6 +25,10 @@ function toMatchPdfSnapshot(received) {
 
   if (isNot) {
     throw new Error('Jest: `.not` cannot be used with `.toMatchPdfSnapshot()`.');
+  }
+
+  if (!fs.existsSync(testPath)) {
+    throw new Error(`Jest: given path to \`.toMatchPdfSnapshot()\` is not present: ${testPath}`);
   }
 
   const snapshotDir = path.join(path.dirname(testPath), SNAPSHOTS_DIR);
