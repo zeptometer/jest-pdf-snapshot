@@ -96,7 +96,7 @@ describe('diffPdfToSnapshot', () => {
 
 
     expect(result.pass).toBe(true);
-    expect(result.added).toBe(false);
+    expect(result.updated).toBe(false);
     expect(result.added).toBe(false);
   });
 });
