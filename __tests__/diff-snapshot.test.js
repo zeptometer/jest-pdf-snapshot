@@ -148,4 +148,26 @@ describe('diffPdfToSnapshot', () => {
       'snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf',
     );
   });
+
+  it('should override snapshot if updateSnapshot is true', () => {
+    const { diffPdfToSnapshot } = require('../src/diff-snapshot');
+
+    mockFs.existsSync.mockReturnValue(true);
+    mockDiffChecker.mockReturnValue(false);
+
+
+    const result = diffPdfToSnapshot({
+      pdfPath: 'path/to/pdf',
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: true,
+      addSnapshot: false,
+    }, mockedDependency);
+
+
+    expect(result.pass).toBe(true);
+    expect(result.updated).toBe(true);
+    expect(mockFs.copyFileSync).toHaveBeenCalledWith('path/to/pdf', 'snapshotDir/snapshotIdentifier.pdf');
+    expect(mockDiffGenerator).not.toHaveBeenCalled();
+  });
 });

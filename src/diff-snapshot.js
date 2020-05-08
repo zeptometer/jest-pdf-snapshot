@@ -33,6 +33,16 @@ function diffPdfToSnapshot({
 
   const snapshotPath = path.join(snapshotDir, `${snapshotIdentifier}.pdf`);
 
+  if (updateSnapshot) {
+    fs.copyFileSync(pdfPath, snapshotPath);
+
+    return {
+      pass: true,
+      updated: true,
+      added: false,
+    };
+  }
+
   if (!fs.existsSync(snapshotPath)) {
     if (addSnapshot) {
       fs.copyFileSync(pdfPath, snapshotPath);
