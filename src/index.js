@@ -17,7 +17,7 @@ function createSnapshotIdentifier({
 }
 
 // eslint-disable-next-line no-unused-vars
-function toMatchPdfSnapshot(_received) {
+function toMatchPdfSnapshot(received) {
   const {
     testPath, currentTestName, snapshotState, isNot,
   } = this;
@@ -38,6 +38,7 @@ function toMatchPdfSnapshot(_received) {
   const addSnapshot = ['all', 'new'].includes(snapshotState._updateSnapshot);
 
   const result = diffPdfToSnapshot({
+    pdfPath: received,
     snapshotDir,
     snapshotIdentifier,
     updateSnapshot,

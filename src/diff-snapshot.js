@@ -1,7 +1,13 @@
-function diffPdfToSnapshot(path) {
+function diffPdfToSnapshot({
+  pdfpath,
+  snapshotDir,
+  snapshotIdentifier,
+  updateSnapshot,
+  addSnapshot,
+}) {
   return {
     pass: '',
-    diffOutputPath: path,
+    diffOutputPath: '',
   };
 }
 

@@ -32,7 +32,7 @@ describe('toMatchPdfSnapshot', () => {
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
 
 
-    expect(() => matcherAtTest('pretendthisisanimagebuffer'))
+    expect(() => matcherAtTest('path/to/pdf'))
       .toThrowErrorMatchingSnapshot();
   });
 
@@ -48,12 +48,13 @@ describe('toMatchPdfSnapshot', () => {
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
 
 
-    const result = matcherAtTest('pretendthisisanimagebuffer');
+    const result = matcherAtTest('path/to/pdf');
 
 
     expect(result).toHaveProperty('pass', true);
     expect(mockTestContext.snapshotState).toHaveProperty('matched', 1);
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
+      pdfPath: 'path/to/pdf',
       snapshotDir: 'path/to/__pdf_snapshots__',
       snapshotIdentifier: 'test-spec-js-test-1-undefined',
       updateSnapshot: false,
@@ -74,13 +75,14 @@ describe('toMatchPdfSnapshot', () => {
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
 
 
-    const result = matcherAtTest('pretendthisisanimagebuffer');
+    const result = matcherAtTest('path/to/pdf');
 
 
     expect(result).toHaveProperty('pass', false);
     expect(result.message()).toMatchSnapshot();
     expect(mockTestContext.snapshotState).toHaveProperty('unmatched', 1);
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
+      pdfPath: 'path/to/pdf',
       snapshotDir: 'path/to/__pdf_snapshots__',
       snapshotIdentifier: 'test-spec-js-test-1-undefined',
       updateSnapshot: false,
@@ -103,12 +105,13 @@ describe('toMatchPdfSnapshot', () => {
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
 
 
-    const result = matcherAtTest('pretendthisisanimagebuffer');
+    const result = matcherAtTest('path/to/pdf');
 
 
     expect(result).toHaveProperty('pass', true);
     expect(mockTestContext.snapshotState).toHaveProperty('updated', 1);
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
+      pdfPath: 'path/to/pdf',
       snapshotDir: 'path/to/__pdf_snapshots__',
       snapshotIdentifier: 'test-spec-js-test-1-undefined',
       updateSnapshot: true,
@@ -128,12 +131,13 @@ describe('toMatchPdfSnapshot', () => {
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
 
 
-    const result = matcherAtTest('pretendthisisanimagebuffer');
+    const result = matcherAtTest('path/to/pdf');
 
 
     expect(result).toHaveProperty('pass', true);
     expect(mockTestContext.snapshotState).toHaveProperty('added', 1);
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
+      pdfPath: 'path/to/pdf',
       snapshotDir: 'path/to/__pdf_snapshots__',
       snapshotIdentifier: 'test-spec-js-test-1-undefined',
       updateSnapshot: false,
@@ -157,12 +161,13 @@ describe('toMatchPdfSnapshot', () => {
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
 
 
-    const result = matcherAtTest('pretendthisisanimagebuffer');
+    const result = matcherAtTest('path/to/pdf');
 
 
     expect(result).toHaveProperty('pass', false);
     expect(result.message()).toMatchSnapshot();
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
+      pdfPath: 'path/to/pdf',
       snapshotDir: 'path/to/__pdf_snapshots__',
       snapshotIdentifier: 'test-spec-js-test-1-undefined',
       updateSnapshot: false,
