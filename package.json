@@ -22,5 +22,8 @@
     "chalk": "^4.0.0",
     "lodash": "^4.17.15",
     "shelljs": "^0.8.4"
+  },
+  "jest": {
+    "testPathIgnorePatterns": ["/node_modules/", "__tests__/integration"]
   }
 }
