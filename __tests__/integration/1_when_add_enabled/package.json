@@ -1,0 +1,15 @@
+{
+  "name": "1_when_add_enabled",
+  "version": "1.0.0",
+  "description": "Mock project for integration test",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "jest": "^26.0.1",
+    "jest-pdf-snapshot": "file:./../../../"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}
