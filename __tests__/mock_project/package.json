@@ -10,6 +10,6 @@
   },
   "devDependencies": {
     "jest": "^26.0.1",
-    "jest-pdf-snapshot": "file:../../../"
+    "jest-pdf-snapshot": "file:../../"
   }
 }
