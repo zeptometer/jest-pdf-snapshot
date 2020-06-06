@@ -16,6 +16,7 @@ describe('jest-pdf-snapshot', () => {
     shell.cd('__tests__/mock_project');
     shell.exec('yarn install');
     shell.cd('..');
+    shell.rm('-rf', 'sandbox');
   });
 
   beforeEach(() => {
