@@ -78,7 +78,7 @@ exports[`jest-pdf-snapshot works as expected when local testing 1`] = `
 [1mTest Suites: [22m[1m[31m1 failed[39m[22m, 1 total
 [1mTests:       [22m[1m[31m1 failed[39m[22m, [1m[32m2 passed[39m[22m, 3 total
 [1mSnapshots:   [22m[1m[31m1 failed[39m[22m, [1m[32m1 written[39m[22m, [1m[32m1 passed[39m[22m, 3 total
-[1mTime:[22m        ???s
+[1mTime:[22m        ??? s
 [2mRan all test suites[22m[2m.[22m
 [2K[1G[31merror[39m Command failed with exit code 1.
 "
@@ -97,7 +97,7 @@ exports[`jest-pdf-snapshot works as expected when updating snapshot 1`] = `
 [1mTest Suites: [22m[1m[32m1 passed[39m[22m, 1 total
 [1mTests:       [22m[1m[32m3 passed[39m[22m, 3 total
 [1mSnapshots:   [22m[1m[32m3 updated[39m[22m, 3 total
-[1mTime:[22m        ???s
+[1mTime:[22m        ??? s
 [2mRan all test suites[22m[2m.[22m
 "
 `;

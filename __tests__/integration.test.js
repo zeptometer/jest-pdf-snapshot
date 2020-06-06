@@ -7,7 +7,7 @@ shell.config.silent = true;
 function maskTime(jestOutput) {
   return jestOutput
     .replace(/\(\d+ ms\)/g, '(??? ms)')
-    .replace(/\d+\.\d+ s, estimated \d+ s/g, '???s')
+    .replace(/\d+\.\d+ s, estimated \d+ s/g, '??? s')
     .replace(/\d+\.\d+ s/g, '??? s');
 }
 
