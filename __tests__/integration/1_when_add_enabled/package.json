@@ -5,11 +5,11 @@
   "main": "index.js",
   "license": "MIT",
   "private": true,
-  "devDependencies": {
-    "jest": "^26.0.1",
-    "jest-pdf-snapshot": "file:./../../../"
-  },
   "scripts": {
     "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^26.0.1",
+    "jest-pdf-snapshot": "file:../../../"
   }
 }
