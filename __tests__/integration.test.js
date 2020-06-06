@@ -33,12 +33,26 @@ describe('jest-pdf-snapshot', () => {
     const result = shell.exec('yarn test');
 
     expect(maskTime(result.stderr)).toMatchSnapshot();
+    expect(fs.existsSync('__pdf_snapshots__/mock-test-js-snapshot-is-absent-1.pdf'))
+      .toBeTruthy();
+    expect(fs.existsSync('__pdf_snapshots__/__diff_output__/mock-test-js-snapshot-is-different-1-diff.pdf'))
+      .toBeTruthy();
   });
 
   it('works as expected when updating snapshot', () => {
+    const snapshotPath = '__pdf_snapshots__/mock-test-js-snapshot-is-different-1.pdf';
+    const originalModifiedTime = fs.statSync(snapshotPath).mtimeMs;
+
+
     const result = shell.exec('yarn test --update-snapshot');
 
+
     expect(maskTime(result.stderr)).toMatchSnapshot();
+    expect(fs.existsSync('__pdf_snapshots__/mock-test-js-snapshot-is-absent-1.pdf'))
+      .toBeTruthy();
+
+    const newModifiedTime = fs.statSync(snapshotPath).mtimeMs;
+    expect(newModifiedTime).toBeGreaterThan(originalModifiedTime);
   });
 
   it('works as expected in ci', () => {
