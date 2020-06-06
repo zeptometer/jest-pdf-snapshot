@@ -113,7 +113,7 @@ describe('toMatchPdfSnapshot', () => {
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
       pdfPath: 'path/to/pdf',
       snapshotDir: 'path/to/__pdf_snapshots__',
-      snapshotIdentifier: 'test-spec-js-test-1-undefined',
+      snapshotIdentifier: 'test-spec-js-test-1-1',
       updateSnapshot: false,
       addSnapshot: true,
     });
@@ -141,7 +141,7 @@ describe('toMatchPdfSnapshot', () => {
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
       pdfPath: 'path/to/pdf',
       snapshotDir: 'path/to/__pdf_snapshots__',
-      snapshotIdentifier: 'test-spec-js-test-1-undefined',
+      snapshotIdentifier: 'test-spec-js-test-1-1',
       updateSnapshot: false,
       addSnapshot: true,
     });
@@ -170,7 +170,7 @@ describe('toMatchPdfSnapshot', () => {
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
       pdfPath: 'path/to/pdf',
       snapshotDir: 'path/to/__pdf_snapshots__',
-      snapshotIdentifier: 'test-spec-js-test-1-undefined',
+      snapshotIdentifier: 'test-spec-js-test-1-1',
       updateSnapshot: true,
       addSnapshot: true,
     });
@@ -196,7 +196,7 @@ describe('toMatchPdfSnapshot', () => {
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
       pdfPath: 'path/to/pdf',
       snapshotDir: 'path/to/__pdf_snapshots__',
-      snapshotIdentifier: 'test-spec-js-test-1-undefined',
+      snapshotIdentifier: 'test-spec-js-test-1-1',
       updateSnapshot: false,
       addSnapshot: true,
     });
@@ -226,7 +226,7 @@ describe('toMatchPdfSnapshot', () => {
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
       pdfPath: 'path/to/pdf',
       snapshotDir: 'path/to/__pdf_snapshots__',
-      snapshotIdentifier: 'test-spec-js-test-1-undefined',
+      snapshotIdentifier: 'test-spec-js-test-1-1',
       updateSnapshot: false,
       addSnapshot: false,
     });
