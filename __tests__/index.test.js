@@ -231,4 +231,36 @@ describe('toMatchPdfSnapshot', () => {
       addSnapshot: false,
     });
   });
+
+  it('should increment snapshot count when called multiple times', () => {
+    mockDiffPdfToSnapshot.mockReturnValue({
+      pass: true,
+      updated: false,
+      added: false,
+    });
+
+    const { toMatchPdfSnapshot } = require('../src/index');
+    const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
+
+
+    matcherAtTest('path/to/pdf-1');
+    matcherAtTest('path/to/pdf-2');
+
+
+    expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
+      pdfPath: 'path/to/pdf-1',
+      snapshotDir: 'path/to/__pdf_snapshots__',
+      snapshotIdentifier: 'test-spec-js-test-1-1',
+      updateSnapshot: false,
+      addSnapshot: true,
+    });
+
+    expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
+      pdfPath: 'path/to/pdf-2',
+      snapshotDir: 'path/to/__pdf_snapshots__',
+      snapshotIdentifier: 'test-spec-js-test-1-2',
+      updateSnapshot: false,
+      addSnapshot: true,
+    });
+  });
 });
