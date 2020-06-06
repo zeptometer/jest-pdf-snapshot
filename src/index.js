@@ -7,6 +7,15 @@ const { diffPdfToSnapshot } = require('./diff-snapshot');
 
 const SNAPSHOTS_DIR = '__pdf_snapshots__';
 
+function initializeOrIncrementTestCounter(
+  testCounterMap,
+  currentTestName,
+) {
+  const currentCount = testCounterMap.get(currentTestName);
+  const updatedCount = (currentCount || 0) + 1;
+  testCounterMap.set(currentTestName, updatedCount);
+}
+
 function createSnapshotIdentifier({
   testPath,
   currentTestName,
@@ -32,6 +41,9 @@ function toMatchPdfSnapshot(received) {
   if (!fs.existsSync(snapshotDir)) {
     fs.mkdirSync(snapshotDir);
   }
+
+  // eslint-disable-next-line no-underscore-dangle
+  initializeOrIncrementTestCounter(snapshotState._counters, currentTestName);
 
   const snapshotIdentifier = createSnapshotIdentifier({
     testPath,
