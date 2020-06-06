@@ -1,5 +1,5 @@
 {
-  "name": "1_when_add_enabled",
+  "name": "mock-project",
   "version": "1.0.0",
   "description": "Mock project for integration test",
   "main": "index.js",

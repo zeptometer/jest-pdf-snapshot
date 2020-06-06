@@ -24,6 +24,6 @@
     "shelljs": "^0.8.4"
   },
   "jest": {
-    "testPathIgnorePatterns": ["/node_modules/", "__tests__/integration"]
+    "testPathIgnorePatterns": ["/node_modules/", "__tests__/mock_project"]
   }
 }
