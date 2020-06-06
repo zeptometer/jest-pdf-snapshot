@@ -4,14 +4,14 @@ const path = require('path');
 
 const DIFF_OUTPUT_DIR = '__diff_output__';
 
-shell.config.fatal = true;
+shell.config.silent = true;
 
 function defaultIsSamePdf(source, target) {
   return shell.exec(`diff-pdf ${source} ${target}`).code === 0;
 }
 
 function defaultGenerateDiff(source, target, diffOutput) {
-  return shell.exec(`diff-pdf --output=${diffOutput} ${source} ${target}`);
+  return shell.exec(`diff-pdf --output-diff=${diffOutput} ${source} ${target}`);
 }
 
 function diffPdfToSnapshot({
