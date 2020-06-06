@@ -14,11 +14,11 @@ describe('diffPdfToSnapshot', () => {
   };
   jest.mock('shelljs', () => mockShell);
 
-  const mockDiffChecker = jest.fn();
-  const mockDiffGenerator = jest.fn();
+  const mockIsSamePdf = jest.fn();
+  const mockGenerateDiff = jest.fn();
   const mockedDependency = {
-    diffChecker: mockDiffChecker,
-    diffGenerator: mockDiffGenerator,
+    isSamePdf: mockIsSamePdf,
+    generateDiff: mockGenerateDiff,
   };
 
   beforeEach(() => {
@@ -26,8 +26,8 @@ describe('diffPdfToSnapshot', () => {
     mockFs.existsSync.mockReset();
     mockFs.mkdirSync.mockReset();
     mockShell.exec.mockReset();
-    mockDiffChecker.mockReset();
-    mockDiffGenerator.mockReset();
+    mockIsSamePdf.mockReset();
+    mockGenerateDiff.mockReset();
 
     mockShell.exec.mockReturnValue({ code: 0 });
   });
@@ -113,7 +113,7 @@ describe('diffPdfToSnapshot', () => {
     const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
     mockFs.existsSync.mockReturnValue(true);
-    mockDiffChecker.mockReturnValue(true);
+    mockIsSamePdf.mockReturnValue(true);
 
 
     const result = diffPdfToSnapshot({
@@ -137,7 +137,7 @@ describe('diffPdfToSnapshot', () => {
       .mockReturnValueOnce(true)
       .mockReturnValueOnce(true)
       .mockReturnValueOnce(false);
-    mockDiffChecker.mockReturnValue(false);
+    mockIsSamePdf.mockReturnValue(false);
 
 
     diffPdfToSnapshot({
@@ -156,7 +156,7 @@ describe('diffPdfToSnapshot', () => {
     const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
     mockFs.existsSync.mockReturnValue(true);
-    mockDiffChecker.mockReturnValue(false);
+    mockIsSamePdf.mockReturnValue(false);
 
 
     const result = diffPdfToSnapshot({
@@ -171,7 +171,7 @@ describe('diffPdfToSnapshot', () => {
     expect(result.pass).toBe(false);
     expect(result.failureType).toBe('MismatchSnapshot');
     expect(result.diffOutputPath).toBe('snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf');
-    expect(mockDiffGenerator).toHaveBeenCalledWith(
+    expect(mockGenerateDiff).toHaveBeenCalledWith(
       'path/to/pdf',
       'snapshotDir/snapshotIdentifier.pdf',
       'snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf',
@@ -182,7 +182,7 @@ describe('diffPdfToSnapshot', () => {
     const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
     mockFs.existsSync.mockReturnValue(true);
-    mockDiffChecker.mockReturnValue(false);
+    mockIsSamePdf.mockReturnValue(false);
 
 
     const result = diffPdfToSnapshot({
@@ -197,6 +197,6 @@ describe('diffPdfToSnapshot', () => {
     expect(result.pass).toBe(true);
     expect(result.updated).toBe(true);
     expect(mockFs.copyFileSync).toHaveBeenCalledWith('path/to/pdf', 'snapshotDir/snapshotIdentifier.pdf');
-    expect(mockDiffGenerator).not.toHaveBeenCalled();
+    expect(mockGenerateDiff).not.toHaveBeenCalled();
   });
 });

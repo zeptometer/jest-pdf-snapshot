@@ -6,12 +6,12 @@ const DIFF_OUTPUT_DIR = '__diff_output__';
 
 shell.config.fatal = true;
 
-function checkDiff(source, target) {
+function defaultIsSamePdf(source, target) {
   return shell.exec(`diff-pdf ${source} ${target}`).code === 0;
 }
 
-function generateDiff(source, target, diffOutput) {
-  return shell.exec(`diff-pdf --output=${diffOutput} ${source} ${target}`).code === 1;
+function defaultGenerateDiff(source, target, diffOutput) {
+  return shell.exec(`diff-pdf --output=${diffOutput} ${source} ${target}`);
 }
 
 function diffPdfToSnapshot({
@@ -21,8 +21,8 @@ function diffPdfToSnapshot({
   updateSnapshot,
   addSnapshot,
 }, {
-  diffChecker = checkDiff,
-  diffGenerator = generateDiff,
+  isSamePdf = defaultIsSamePdf,
+  generateDiff = defaultGenerateDiff,
 } = {}) {
   if (shell.exec('diff-pdf -h').code !== 0) {
     return {
@@ -67,7 +67,7 @@ function diffPdfToSnapshot({
     };
   }
 
-  if (!diffChecker(pdfPath, snapshotPath)) {
+  if (!isSamePdf(pdfPath, snapshotPath)) {
     const diffOutputDir = path.join(snapshotDir, DIFF_OUTPUT_DIR);
 
     if (!fs.existsSync(diffOutputDir)) {
@@ -76,7 +76,7 @@ function diffPdfToSnapshot({
 
     const diffOutputPath = path.join(diffOutputDir, `${snapshotIdentifier}-diff.pdf`);
 
-    diffGenerator(pdfPath, snapshotPath, diffOutputPath);
+    generateDiff(pdfPath, snapshotPath, diffOutputPath);
 
     return {
       pass: false,
