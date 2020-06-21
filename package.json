@@ -1,6 +1,6 @@
 {
   "name": "jest-pdf-snapshot",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Jest matcher for pdf comparison",
   "main": "src/index.js",
   "repository": "https://github.com/zeptometer/Tsingtao.git",
