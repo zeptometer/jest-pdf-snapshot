@@ -11,17 +11,20 @@ test('Snapshot matches', () => {
 });
 ```
 
-Would make following files:
+Would give you following files:
 
 ```
-src/tests
-├── pdf_snapshots
-│   ├── __diff_output__
-|   |   └── pdf-snapshot-test-js-snapshot-is-different-1-diff.pdf 
-|   |        (in case snapshot doesn't match) 
-│   └── pdf-snapshot-test-js-snapshot-matches-1.pdf
-└── pdf-snapshot.test.js
+├── resources/test1.pdf
+└── __tests__
+    ├── pdf_snapshots
+    │   ├── __diff_output__
+    |   |   └── pdf-snapshot-test-js-snapshot-is-different-1-diff.pdf 
+    |   |        (in case snapshot doesn't match) 
+    │   └── pdf-snapshot-test-js-snapshot-matches-1.pdf
+    └── pdf-snapshot.test.js
 ```
+
+If you want to play with working example, see our mock project in `__tests__/mock_project`, which we use for integration tests.
 
 ## Installation
 ⚠️ Jest-pdf-snapshot depends on [vslavik/diff-pdf](https://github.com/vslavik/diff-pdf). Please read [diff-pdf's README.md](https://github.com/vslavik/diff-pdf/blob/master/README.md#obtaining-the-binaries) to install it to your test environment.
