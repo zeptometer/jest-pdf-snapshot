@@ -1,3 +1,11 @@
+    =========================== CAUTION ===========================
+    All contents in this repository are still under development.
+    APIs are quite unstable and subject to change.
+    It is possible that there are many bugs in the implementation.
+    We assume the users are able to fix issues by theirselves in case of trouble.
+    (Any contribution is welcome)
+    ===============================================================
+
 # jest-pdf-snapshot
 *jest-pdf-snapshot* provides Jest matcher that performs pdf comparisons. It uses [diff-pdf](https://vslavik.github.io/diff-pdf/) for pdf comparison/diff.
 
