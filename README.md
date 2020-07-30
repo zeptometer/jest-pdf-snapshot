@@ -6,6 +6,8 @@
     (Any contribution is welcome)
     ===============================================================
 
+[![npm version](https://badge.fury.io/js/jest-pdf-snapshot.svg)](https://badge.fury.io/js/jest-pdf-snapshot)
+
 # jest-pdf-snapshot
 *jest-pdf-snapshot* provides Jest matcher that performs pdf comparisons. It uses [diff-pdf](https://vslavik.github.io/diff-pdf/) for pdf comparison/diff.
 
