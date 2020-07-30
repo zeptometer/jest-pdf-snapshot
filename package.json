@@ -16,7 +16,8 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jest": "^23.8.2",
-    "jest": "^26.1.0"
+    "jest": "^26.1.0",
+    "jest-runner-groups": "^2.0.1"
   },
   "dependencies": {
     "chalk": "^4.0.0",
@@ -24,6 +25,11 @@
     "shelljs": "^0.8.4"
   },
   "jest": {
-    "testPathIgnorePatterns": ["/node_modules/", "__tests__/mock_project", "__tests__/sandbox"]
+    "runner": "groups",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "__tests__/mock_project",
+      "__tests__/sandbox"
+    ]
   }
 }
