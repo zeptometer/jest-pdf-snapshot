@@ -1,3 +1,7 @@
+/**
+ * @group integration
+ */
+
 /* eslint-disable global-require */
 const shell = require('shelljs');
 const fs = require('fs');

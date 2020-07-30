@@ -1,3 +1,7 @@
+/**
+ * @group unit
+ */
+
 /* eslint-disable global-require */
 
 describe('toMatchPdfSnapshot', () => {
