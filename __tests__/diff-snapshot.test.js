@@ -3,9 +3,10 @@
  */
 
 const mockFs = {
-  copyFileSync: jest.fn(),
   existsSync: jest.fn(),
   mkdirSync: jest.fn(),
+  openSync: jest.fn(),
+  writeSync: jest.fn(),
 };
 jest.mock('fs', () => mockFs);
 
@@ -25,9 +26,10 @@ describe('diffPdfToSnapshot', () => {
   };
 
   beforeEach(() => {
-    mockFs.copyFileSync.mockReset();
     mockFs.existsSync.mockReset();
     mockFs.mkdirSync.mockReset();
+    mockFs.openSync.mockReset();
+    mockFs.writeSync.mockReset();
     mockShell.exec.mockReset();
     mockIsSamePdf.mockReset();
     mockGenerateDiff.mockReset();
@@ -53,25 +55,30 @@ describe('diffPdfToSnapshot', () => {
     expect(result.failureType).toBe('DiffPdfNotFound');
   });
 
-  // it('should copy pdf to snapshot when addSnapshot is true and snapshot does not exist', () => {
-  //   // Given
-  //   mockFs.existsSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
+  it('should copy pdf to snapshot when addSnapshot is true and snapshot does not exist', () => {
+    // Given
+    const randomFd = 1121;
+    mockFs.existsSync.mockReturnValue(false);
+    mockFs.openSync.mockReturnValue(randomFd);
 
-  //   // When
-  //   const result = diffPdfToSnapshot({
-  //     pdfPath: 'path/to/pdf',
-  //     snapshotDir: 'snapshotDir',
-  //     snapshotIdentifier: 'snapshotIdentifier',
-  //     updateSnapshot: undefined,
-  //     addSnapshot: true,
-  //   });
+    // When
+    const pdfBuffer = Buffer.from('This is pdf file buffer');
 
-  //   // Then
-  //   expect(result.pass).toBe(true);
-  //   expect(result.added).toBe(true);
-  //   expect(mockFs.existsSync).toHaveBeenCalledWith('snapshotDir/snapshotIdentifier.pdf');
-  //   expect(mockFs.copyFileSync).toHaveBeenCalledWith('path/to/pdf', 'snapshotDir/snapshotIdentifier.pdf');
-  // });
+    const result = diffPdfToSnapshot({
+      pdfBuffer,
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: false,
+      addSnapshot: true,
+    });
+
+    // Then
+    expect(result.pass).toBe(true);
+    expect(result.added).toBe(true);
+    expect(mockFs.existsSync).toHaveBeenCalledWith('snapshotDir/snapshotIdentifier.pdf');
+    expect(mockFs.openSync).toHaveBeenCalledWith('snapshotDir/snapshotIdentifier.pdf', 'w');
+    expect(mockFs.writeSync).toHaveBeenCalledWith(randomFd, pdfBuffer);
+  });
 
   // it('should fail when addSnapthot is false and snapshot does not exist', () => {
   //   // Given

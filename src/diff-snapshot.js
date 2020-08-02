@@ -15,7 +15,7 @@ function defaultGenerateDiff(source, target, diffOutput) {
 }
 
 function diffPdfToSnapshot({
-  pdfPath,
+  pdfBuffer,
   snapshotDir,
   snapshotIdentifier,
   updateSnapshot,
@@ -28,13 +28,6 @@ function diffPdfToSnapshot({
     return {
       pass: false,
       failureType: 'DiffPdfNotFound',
-    };
-  }
-
-  if (!fs.existsSync(pdfPath)) {
-    return {
-      pass: false,
-      failureType: 'SourcePdfNotPresent',
     };
   }
 
@@ -52,7 +45,8 @@ function diffPdfToSnapshot({
 
   if (!fs.existsSync(snapshotPath)) {
     if (addSnapshot) {
-      fs.copyFileSync(pdfPath, snapshotPath);
+      const snapshotFd = fs.openSync(snapshotPath, 'w');
+      fs.writeSync(snapshotFd, pdfBuffer);
 
       return {
         pass: true,
