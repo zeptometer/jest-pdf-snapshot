@@ -34,7 +34,8 @@ function diffPdfToSnapshot({
   const snapshotPath = path.join(snapshotDir, `${snapshotIdentifier}.pdf`);
 
   if (updateSnapshot) {
-    fs.copyFileSync(pdfPath, snapshotPath);
+    const snapshotFd = fs.openSync(snapshotPath, 'w');
+    fs.writeSync(snapshotFd, pdfBuffer);
 
     return {
       pass: true,

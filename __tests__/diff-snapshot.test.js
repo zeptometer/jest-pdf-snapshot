@@ -55,6 +55,30 @@ describe('diffPdfToSnapshot', () => {
     expect(result.failureType).toBe('DiffPdfNotFound');
   });
 
+  it('should override snapshot if updateSnapshot is true', () => {
+    // Given
+    const randomFd = 1121;
+    mockFs.existsSync.mockReturnValue(false);
+    mockFs.openSync.mockReturnValue(randomFd);
+
+    // When
+    const pdfBuffer = Buffer.from('This is pdf file buffer');
+
+    const result = diffPdfToSnapshot({
+      pdfBuffer,
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: true,
+      addSnapshot: false,
+    }, mockedDependency);
+
+    // Then
+    expect(result.pass).toBe(true);
+    expect(result.updated).toBe(true);
+    expect(mockFs.openSync).toHaveBeenCalledWith('snapshotDir/snapshotIdentifier.pdf', 'w');
+    expect(mockFs.writeSync).toHaveBeenCalledWith(randomFd, pdfBuffer);
+  });
+
   it('should copy pdf to snapshot when addSnapshot is true and snapshot does not exist', () => {
     // Given
     const randomFd = 1121;
@@ -85,8 +109,10 @@ describe('diffPdfToSnapshot', () => {
     mockFs.existsSync.mockReturnValueOnce(false);
 
     // When
+    const pdfBuffer = Buffer.from('This is pdf file buffer');
+
     const result = diffPdfToSnapshot({
-      pdfPath: 'path/to/pdf',
+      pdfBuffer,
       snapshotDir: 'snapshotDir',
       snapshotIdentifier: 'snapshotIdentifier',
       updateSnapshot: false,
@@ -163,26 +189,5 @@ describe('diffPdfToSnapshot', () => {
   //     'snapshotDir/snapshotIdentifier.pdf',
   //     'snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf',
   //   );
-  // });
-
-  // it('should override snapshot if updateSnapshot is true', () => {
-  //   // Given
-  //   mockFs.existsSync.mockReturnValue(true);
-  //   mockIsSamePdf.mockReturnValue(false);
-
-  //   // When
-  //   const result = diffPdfToSnapshot({
-  //     pdfPath: 'path/to/pdf',
-  //     snapshotDir: 'snapshotDir',
-  //     snapshotIdentifier: 'snapshotIdentifier',
-  //     updateSnapshot: true,
-  //     addSnapshot: false,
-  //   }, mockedDependency);
-
-  //   // Then
-  //   expect(result.pass).toBe(true);
-  //   expect(result.updated).toBe(true);
-  //   expect(mockFs.copyFileSync).toHaveBeenCalledWith('path/to/pdf', 'snapshotDir/snapshotIdentifier.pdf');
-  //   expect(mockGenerateDiff).not.toHaveBeenCalled();
   // });
 });
