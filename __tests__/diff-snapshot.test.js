@@ -15,6 +15,12 @@ const mockShell = {
   config: {},
 };
 jest.mock('shelljs', () => mockShell);
+
+const mockTmp = {
+  fileSync: jest.fn(),
+};
+jest.mock('tmp', () => mockTmp);
+
 const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
 describe('diffPdfToSnapshot', () => {
@@ -24,6 +30,7 @@ describe('diffPdfToSnapshot', () => {
     isSamePdf: mockIsSamePdf,
     generateDiff: mockGenerateDiff,
   };
+  const pdfBuffer = Buffer.from('This is pdf buffer');
 
   beforeEach(() => {
     mockFs.existsSync.mockReset();
@@ -62,8 +69,6 @@ describe('diffPdfToSnapshot', () => {
     mockFs.openSync.mockReturnValue(randomFd);
 
     // When
-    const pdfBuffer = Buffer.from('This is pdf file buffer');
-
     const result = diffPdfToSnapshot({
       pdfBuffer,
       snapshotDir: 'snapshotDir',
@@ -86,8 +91,6 @@ describe('diffPdfToSnapshot', () => {
     mockFs.openSync.mockReturnValue(randomFd);
 
     // When
-    const pdfBuffer = Buffer.from('This is pdf file buffer');
-
     const result = diffPdfToSnapshot({
       pdfBuffer,
       snapshotDir: 'snapshotDir',
@@ -109,8 +112,6 @@ describe('diffPdfToSnapshot', () => {
     mockFs.existsSync.mockReturnValueOnce(false);
 
     // When
-    const pdfBuffer = Buffer.from('This is pdf file buffer');
-
     const result = diffPdfToSnapshot({
       pdfBuffer,
       snapshotDir: 'snapshotDir',
@@ -125,25 +126,34 @@ describe('diffPdfToSnapshot', () => {
     expect(mockFs.openSync).not.toHaveBeenCalled();
   });
 
-  // it('should pass when given pdf is identical to snapshot', () => {
-  //   // Given
-  //   mockFs.existsSync.mockReturnValue(true);
-  //   mockIsSamePdf.mockReturnValue(true);
+  it('should pass when given pdf is identical to snapshot', () => {
+    // Given
+    mockFs.existsSync.mockReturnValue(true);
+    const tmpFileFd = 8837;
+    const mockTmpRemoveCallback = jest.fn();
+    mockTmp.fileSync.mockReturnValue({
+      name: '/tmp/path/to/pdf',
+      fd: tmpFileFd,
+      removeCallback: mockTmpRemoveCallback,
+    });
+    mockIsSamePdf.mockReturnValue(true);
 
-  //   // When
-  //   const result = diffPdfToSnapshot({
-  //     pdfPath: 'path/to/pdf',
-  //     snapshotDir: 'snapshotDir',
-  //     snapshotIdentifier: 'snapshotIdentifier',
-  //     updateSnapshot: undefined,
-  //     addSnapshot: false,
-  //   }, mockedDependency);
+    // When
+    const result = diffPdfToSnapshot({
+      pdfBuffer,
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: undefined,
+      addSnapshot: false,
+    }, mockedDependency);
 
-  //   // Then
-  //   expect(result.pass).toBe(true);
-  //   expect(result.updated).toBe(false);
-  //   expect(result.added).toBe(false);
-  // });
+    // Then
+    expect(result.pass).toBe(true);
+    expect(result.updated).toBe(false);
+    expect(result.added).toBe(false);
+    expect(mockTmp.fileSync).toHaveBeenCalled();
+    expect(mockTmpRemoveCallback).toHaveBeenCalled();
+  });
 
   // it('should create diff output path when not present', () => {
   //   // Given

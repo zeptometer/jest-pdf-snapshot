@@ -1,6 +1,7 @@
-const shell = require('shelljs');
 const fs = require('fs');
 const path = require('path');
+const shell = require('shelljs');
+const tmp = require('tmp');
 
 const DIFF_OUTPUT_DIR = '__diff_output__';
 
@@ -62,7 +63,10 @@ function diffPdfToSnapshot({
     };
   }
 
-  if (!isSamePdf(pdfPath, snapshotPath)) {
+  const tmpFile = tmp.fileSync();
+  fs.writeSync(tmpFile.fd, pdfBuffer);
+
+  if (!isSamePdf(tmpFile.name, snapshotPath)) {
     const diffOutputDir = path.join(snapshotDir, DIFF_OUTPUT_DIR);
 
     if (!fs.existsSync(diffOutputDir)) {
@@ -71,7 +75,9 @@ function diffPdfToSnapshot({
 
     const diffOutputPath = path.join(diffOutputDir, `${snapshotIdentifier}-diff.pdf`);
 
-    generateDiff(pdfPath, snapshotPath, diffOutputPath);
+    generateDiff(tmpFile.name, snapshotPath, diffOutputPath);
+
+    tmpFile.removeCallback();
 
     return {
       pass: false,
@@ -79,6 +85,8 @@ function diffPdfToSnapshot({
       diffOutputPath,
     };
   }
+
+  tmpFile.removeCallback();
 
   return {
     pass: true,
