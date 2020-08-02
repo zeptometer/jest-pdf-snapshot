@@ -80,24 +80,24 @@ describe('diffPdfToSnapshot', () => {
     expect(mockFs.writeSync).toHaveBeenCalledWith(randomFd, pdfBuffer);
   });
 
-  // it('should fail when addSnapthot is false and snapshot does not exist', () => {
-  //   // Given
-  //   mockFs.existsSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
+  it('should fail when addSnapthot is false and snapshot does not exist', () => {
+    // Given
+    mockFs.existsSync.mockReturnValueOnce(false);
 
-  //   // When
-  //   const result = diffPdfToSnapshot({
-  //     pdfPath: 'path/to/pdf',
-  //     snapshotDir: 'snapshotDir',
-  //     snapshotIdentifier: 'snapshotIdentifier',
-  //     updateSnapshot: undefined,
-  //     addSnapshot: false,
-  //   });
+    // When
+    const result = diffPdfToSnapshot({
+      pdfPath: 'path/to/pdf',
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: false,
+      addSnapshot: false,
+    });
 
-  //   // Then
-  //   expect(result.pass).toBe(false);
-  //   expect(mockFs.existsSync).toHaveBeenCalledWith('snapshotDir/snapshotIdentifier.pdf');
-  //   expect(mockFs.copyFileSync).not.toHaveBeenCalled();
-  // });
+    // Then
+    expect(result.pass).toBe(false);
+    expect(mockFs.existsSync).toHaveBeenCalledWith('snapshotDir/snapshotIdentifier.pdf');
+    expect(mockFs.openSync).not.toHaveBeenCalled();
+  });
 
   // it('should pass when given pdf is identical to snapshot', () => {
   //   // Given
