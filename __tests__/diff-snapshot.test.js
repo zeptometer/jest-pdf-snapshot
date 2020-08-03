@@ -155,49 +155,59 @@ describe('diffPdfToSnapshot', () => {
     expect(mockTmpRemoveCallback).toHaveBeenCalled();
   });
 
-  // it('should create diff output path when not present', () => {
-  //   // Given
-  //   mockFs.existsSync
-  //     .mockReturnValueOnce(true)
-  //     .mockReturnValueOnce(true)
-  //     .mockReturnValueOnce(false);
-  //   mockIsSamePdf.mockReturnValue(false);
+  it('should create diff output path when not present', () => {
+    // Given
+    mockFs.existsSync.mockImplementation((path) => {
+      switch (path) {
+        case 'snapshotDir/snapshotIdentifier.pdf': return true;
+        case 'snapshotDir/__diff_output__': return false;
+        default: return undefined;
+      }
+    });
+    mockIsSamePdf.mockReturnValue(false);
 
-  //   // When
-  //   diffPdfToSnapshot({
-  //     pdfPath: 'path/to/pdf',
-  //     snapshotDir: 'snapshotDir',
-  //     snapshotIdentifier: 'snapshotIdentifier',
-  //     updateSnapshot: undefined,
-  //     addSnapshot: false,
-  //   }, mockedDependency);
+    // When
+    diffPdfToSnapshot({
+      pdfPath: 'path/to/pdf',
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: undefined,
+      addSnapshot: false,
+    }, mockedDependency);
 
-  //   // Then
-  //   expect(mockFs.mkdirSync).toHaveBeenCalledWith('snapshotDir/__diff_output__');
-  // });
+    // Then
+    expect(mockFs.mkdirSync).toHaveBeenCalledWith('snapshotDir/__diff_output__');
+  });
 
-  // it('should give path to diff file when files are different', () => {
-  //   // Given
-  //   mockFs.existsSync.mockReturnValue(true);
-  //   mockIsSamePdf.mockReturnValue(false);
+  it('should give path to diff file when files are different', () => {
+    // Given
+    mockFs.existsSync.mockReturnValue(true);
+    mockIsSamePdf.mockReturnValue(false);
+    const tmpFileFd = 8837;
+    const mockTmpRemoveCallback = jest.fn();
+    mockTmp.fileSync.mockReturnValue({
+      name: '/tmp/path/to/pdf',
+      fd: tmpFileFd,
+      removeCallback: mockTmpRemoveCallback,
+    });
 
-  //   // When
-  //   const result = diffPdfToSnapshot({
-  //     pdfPath: 'path/to/pdf',
-  //     snapshotDir: 'snapshotDir',
-  //     snapshotIdentifier: 'snapshotIdentifier',
-  //     updateSnapshot: undefined,
-  //     addSnapshot: false,
-  //   }, mockedDependency);
+    // When
+    const result = diffPdfToSnapshot({
+      pdfPath: 'path/to/pdf',
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: undefined,
+      addSnapshot: false,
+    }, mockedDependency);
 
-  //   // Then
-  //   expect(result.pass).toBe(false);
-  //   expect(result.failureType).toBe('MismatchSnapshot');
-  //   expect(result.diffOutputPath).toBe('snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf');
-  //   expect(mockGenerateDiff).toHaveBeenCalledWith(
-  //     'path/to/pdf',
-  //     'snapshotDir/snapshotIdentifier.pdf',
-  //     'snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf',
-  //   );
-  // });
+    // Then
+    expect(result.pass).toBe(false);
+    expect(result.failureType).toBe('MismatchSnapshot');
+    expect(result.diffOutputPath).toBe('snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf');
+    expect(mockGenerateDiff).toHaveBeenCalledWith(
+      '/tmp/path/to/pdf',
+      'snapshotDir/snapshotIdentifier.pdf',
+      'snapshotDir/__diff_output__/snapshotIdentifier-diff.pdf',
+    );
+  });
 });
