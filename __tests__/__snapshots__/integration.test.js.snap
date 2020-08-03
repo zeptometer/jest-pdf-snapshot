@@ -12,29 +12,29 @@ exports[`jest-pdf-snapshot works as expected in ci 1`] = `
 
      + This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default.
 [2m[22m
-[2m    [0m [90m  8 | [39m[0m[22m
-[2m    [0m [90m  9 | [39mtest([32m'Snapshot is absent'[39m[33m,[39m () [33m=>[39m {[0m[22m
-[2m    [0m[31m[1m>[22m[2m[39m[90m 10 | [39m  expect([32m'../resources/test1.pdf'[39m)[33m.[39mtoMatchPdfSnapshot()[33m;[39m[0m[22m
-[2m    [0m [90m    | [39m                                   [31m[1m^[22m[2m[39m[0m[22m
-[2m    [0m [90m 11 | [39m})[33m;[39m[0m[22m
 [2m    [0m [90m 12 | [39m[0m[22m
-[2m    [0m [90m 13 | [39mtest([32m'Snapshot is different'[39m[33m,[39m () [33m=>[39m {[0m[22m
+[2m    [0m [90m 13 | [39mtest([32m'Snapshot is absent'[39m[33m,[39m () [33m=>[39m {[0m[22m
+[2m    [0m[31m[1m>[22m[2m[39m[90m 14 | [39m  expect(pdfBuffer1)[33m.[39mtoMatchPdfSnapshot()[33m;[39m[0m[22m
+[2m    [0m [90m    | [39m                     [31m[1m^[22m[2m[39m[0m[22m
+[2m    [0m [90m 15 | [39m})[33m;[39m[0m[22m
+[2m    [0m [90m 16 | [39m[0m[22m
+[2m    [0m [90m 17 | [39mtest([32m'Snapshot is different'[39m[33m,[39m () [33m=>[39m {[0m[22m
 [2m[22m
-[2m      [2mat Object.test ([22m[2m[0m[36mmock.test.js[39m[0m[2m:10:36)[22m[2m[22m
+[2m      [2mat Object.test ([22m[2m[0m[36mmock.test.js[39m[0m[2m:14:22)[22m[2m[22m
 
 [1m[31m  [1m● [22m[1mSnapshot is different[39m[22m
 
     Expected pdf to be same as the snapshot, but was different.
     [1m[31mSee diff for details:[39m[22m [31m/home/zeptometer/code/Tsingtao/__tests__/sandbox/__pdf_snapshots__/__diff_output__/mock-test-js-snapshot-is-different-1-diff.pdf[39m
 [2m[22m
-[2m    [0m [90m 12 | [39m[0m[22m
-[2m    [0m [90m 13 | [39mtest([32m'Snapshot is different'[39m[33m,[39m () [33m=>[39m {[0m[22m
-[2m    [0m[31m[1m>[22m[2m[39m[90m 14 | [39m  expect([32m'../resources/test2.pdf'[39m)[33m.[39mtoMatchPdfSnapshot()[33m;[39m[0m[22m
-[2m    [0m [90m    | [39m                                   [31m[1m^[22m[2m[39m[0m[22m
-[2m    [0m [90m 15 | [39m})[33m;[39m[0m[22m
 [2m    [0m [90m 16 | [39m[0m[22m
+[2m    [0m [90m 17 | [39mtest([32m'Snapshot is different'[39m[33m,[39m () [33m=>[39m {[0m[22m
+[2m    [0m[31m[1m>[22m[2m[39m[90m 18 | [39m  expect(pdfBuffer2)[33m.[39mtoMatchPdfSnapshot()[33m;[39m[0m[22m
+[2m    [0m [90m    | [39m                     [31m[1m^[22m[2m[39m[0m[22m
+[2m    [0m [90m 19 | [39m})[33m;[39m[0m[22m
+[2m    [0m [90m 20 | [39m[0m[22m
 [2m[22m
-[2m      [2mat Object.test ([22m[2m[0m[36mmock.test.js[39m[0m[2m:14:36)[22m[2m[22m
+[2m      [2mat Object.test ([22m[2m[0m[36mmock.test.js[39m[0m[2m:18:22)[22m[2m[22m
 
 [1m[31m › 2 snapshots failed.[39m[22m
 [1mSnapshot Summary[22m
@@ -60,14 +60,14 @@ exports[`jest-pdf-snapshot works as expected when local testing 1`] = `
     Expected pdf to be same as the snapshot, but was different.
     [1m[31mSee diff for details:[39m[22m [31m/home/zeptometer/code/Tsingtao/__tests__/sandbox/__pdf_snapshots__/__diff_output__/mock-test-js-snapshot-is-different-1-diff.pdf[39m
 [2m[22m
-[2m    [0m [90m 12 | [39m[0m[22m
-[2m    [0m [90m 13 | [39mtest([32m'Snapshot is different'[39m[33m,[39m () [33m=>[39m {[0m[22m
-[2m    [0m[31m[1m>[22m[2m[39m[90m 14 | [39m  expect([32m'../resources/test2.pdf'[39m)[33m.[39mtoMatchPdfSnapshot()[33m;[39m[0m[22m
-[2m    [0m [90m    | [39m                                   [31m[1m^[22m[2m[39m[0m[22m
-[2m    [0m [90m 15 | [39m})[33m;[39m[0m[22m
 [2m    [0m [90m 16 | [39m[0m[22m
+[2m    [0m [90m 17 | [39mtest([32m'Snapshot is different'[39m[33m,[39m () [33m=>[39m {[0m[22m
+[2m    [0m[31m[1m>[22m[2m[39m[90m 18 | [39m  expect(pdfBuffer2)[33m.[39mtoMatchPdfSnapshot()[33m;[39m[0m[22m
+[2m    [0m [90m    | [39m                     [31m[1m^[22m[2m[39m[0m[22m
+[2m    [0m [90m 19 | [39m})[33m;[39m[0m[22m
+[2m    [0m [90m 20 | [39m[0m[22m
 [2m[22m
-[2m      [2mat Object.test ([22m[2m[0m[36mmock.test.js[39m[0m[2m:14:36)[22m[2m[22m
+[2m      [2mat Object.test ([22m[2m[0m[36mmock.test.js[39m[0m[2m:18:22)[22m[2m[22m
 
 [1m[32m › 1 snapshot written.[39m[22m
 [1m[31m › 1 snapshot failed.[39m[22m
