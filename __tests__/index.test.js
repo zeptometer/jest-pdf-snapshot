@@ -2,20 +2,20 @@
  * @group unit
  */
 
-/* eslint-disable global-require */
+const mockDiffPdfToSnapshot = jest.fn();
+jest.mock('../src/diff-snapshot', () => ({
+  diffPdfToSnapshot: mockDiffPdfToSnapshot,
+}));
+
+const mockFs = {
+  existsSync: jest.fn(),
+  mkdirSync: jest.fn(),
+};
+jest.mock('fs', () => mockFs);
+
+const { toMatchPdfSnapshot } = require('../src/index');
 
 describe('toMatchPdfSnapshot', () => {
-  const mockDiffPdfToSnapshot = jest.fn();
-  jest.mock('../src/diff-snapshot', () => ({
-    diffPdfToSnapshot: mockDiffPdfToSnapshot,
-  }));
-
-  const mockFs = {
-    existsSync: jest.fn(),
-    mkdirSync: jest.fn(),
-  };
-  jest.mock('fs', () => mockFs);
-
   let mockTestContext;
 
   beforeEach(() => {
@@ -40,46 +40,44 @@ describe('toMatchPdfSnapshot', () => {
   });
 
   it('should throw an error if used with .not matcher', () => {
+    // Given
     mockTestContext.isNot = true;
 
-    const { toMatchPdfSnapshot } = require('../src/index');
+    // When & Then
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
-
-
     expect(() => matcherAtTest('path/to/pdf'))
       .toThrowErrorMatchingSnapshot();
   });
 
   it('should thrown an error when diff-pdf is not available', () => {
+    // Given
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: false,
       failureType: 'DiffPdfNotFound',
     });
 
-    const { toMatchPdfSnapshot } = require('../src/index');
+    // When & Then
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
-
-
     expect(() => matcherAtTest('path/to/pdf'))
       .toThrowErrorMatchingSnapshot();
   });
 
 
   it('should thrown an error when given pdf path is not present', () => {
+    // Given
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: false,
       failureType: 'SourcePdfNotPresent',
     });
 
-    const { toMatchPdfSnapshot } = require('../src/index');
+    // When & Then
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
-
-
     expect(() => matcherAtTest('path/to/pdf'))
       .toThrowErrorMatchingSnapshot();
   });
 
   it('should create snapshot directory if not present', () => {
+    // Given
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: true,
       updated: false,
@@ -87,13 +85,11 @@ describe('toMatchPdfSnapshot', () => {
     });
     mockFs.existsSync.mockReturnValue(false);
 
-    const { toMatchPdfSnapshot } = require('../src/index');
+    // When
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
-
-
     matcherAtTest('path/to/pdf');
 
-
+    // Then
     expect(mockFs.existsSync).toHaveBeenCalledWith('path/to/__pdf_snapshots__');
     expect(mockFs.mkdirSync).toHaveBeenCalledWith('path/to/__pdf_snapshots__');
   });
@@ -105,13 +101,11 @@ describe('toMatchPdfSnapshot', () => {
       added: false,
     });
 
-    const { toMatchPdfSnapshot } = require('../src/index');
+    // When
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
-
-
     const result = matcherAtTest('path/to/pdf');
 
-
+    // Then
     expect(result).toHaveProperty('pass', true);
     expect(mockTestContext.snapshotState).toHaveProperty('matched', 1);
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
@@ -124,6 +118,7 @@ describe('toMatchPdfSnapshot', () => {
   });
 
   it('should fail when the acutual has a difference from the snapshot', () => {
+    // Given
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: false,
       failureType: 'MismatchSnapshot',
@@ -132,13 +127,11 @@ describe('toMatchPdfSnapshot', () => {
       diffOutputPath: 'path/to/result.png',
     });
 
-    const { toMatchPdfSnapshot } = require('../src/index');
+    // When
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
-
-
     const result = matcherAtTest('path/to/pdf');
 
-
+    // Then
     expect(result).toHaveProperty('pass', false);
     expect(result.message()).toMatchSnapshot();
     expect(mockTestContext.snapshotState).toHaveProperty('unmatched', 1);
@@ -152,6 +145,7 @@ describe('toMatchPdfSnapshot', () => {
   });
 
   it('attempts to update snapshots if snapshotState has updateSnapshot flag set', () => {
+    // Given
     // eslint-disable-next-line no-underscore-dangle
     mockTestContext.snapshotState._updateSnapshot = 'all';
 
@@ -162,13 +156,11 @@ describe('toMatchPdfSnapshot', () => {
       diffOutputPath: 'path/to/result.png',
     });
 
-    const { toMatchPdfSnapshot } = require('../src/index');
+    // When
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
-
-
     const result = matcherAtTest('path/to/pdf');
 
-
+    // Then
     expect(result).toHaveProperty('pass', true);
     expect(mockTestContext.snapshotState).toHaveProperty('updated', 1);
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
@@ -181,6 +173,7 @@ describe('toMatchPdfSnapshot', () => {
   });
 
   it('should work when a new snapshot is added', () => {
+    // Given
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: true,
       updated: false,
@@ -188,13 +181,11 @@ describe('toMatchPdfSnapshot', () => {
       diffOutputPath: 'path/to/result.png',
     });
 
-    const { toMatchPdfSnapshot } = require('../src/index');
+    // When
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
-
-
     const result = matcherAtTest('path/to/pdf');
 
-
+    // Then
     expect(result).toHaveProperty('pass', true);
     expect(mockTestContext.snapshotState).toHaveProperty('added', 1);
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
@@ -207,6 +198,7 @@ describe('toMatchPdfSnapshot', () => {
   });
 
   it('should fail when a new snapshot is added in ci', () => {
+    // Given
     // eslint-disable-next-line no-underscore-dangle
     mockTestContext.snapshotState._updateSnapshot = 'none';
 
@@ -218,13 +210,11 @@ describe('toMatchPdfSnapshot', () => {
       diffOutputPath: 'path/to/result.png',
     });
 
-    const { toMatchPdfSnapshot } = require('../src/index');
+    // When
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
-
-
     const result = matcherAtTest('path/to/pdf');
 
-
+    // Then
     expect(result).toHaveProperty('pass', false);
     expect(result.message()).toMatchSnapshot();
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
@@ -237,20 +227,19 @@ describe('toMatchPdfSnapshot', () => {
   });
 
   it('should increment snapshot count when called multiple times', () => {
+    // Given
     mockDiffPdfToSnapshot.mockReturnValue({
       pass: true,
       updated: false,
       added: false,
     });
 
-    const { toMatchPdfSnapshot } = require('../src/index');
+    // When
     const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
-
-
     matcherAtTest('path/to/pdf-1');
     matcherAtTest('path/to/pdf-2');
 
-
+    // Then
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
       pdfPath: 'path/to/pdf-1',
       snapshotDir: 'path/to/__pdf_snapshots__',
