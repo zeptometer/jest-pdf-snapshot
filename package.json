@@ -1,6 +1,6 @@
 {
   "name": "jest-pdf-snapshot",
-  "version": "0.5.2",
+  "version": "0.5.4",
   "description": "Jest matcher for pdf comparison",
   "main": "src/index.js",
   "repository": "https://github.com/zeptometer/jest-pdf-snapshot.git",
