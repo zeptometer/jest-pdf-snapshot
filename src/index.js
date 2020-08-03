@@ -56,7 +56,7 @@ function toMatchPdfSnapshot(received) {
   const addSnapshot = ['all', 'new'].includes(snapshotState._updateSnapshot);
 
   const result = diffPdfToSnapshot({
-    pdfPath: received,
+    pdfBuffer: received,
     snapshotDir,
     snapshotIdentifier,
     updateSnapshot,
@@ -77,9 +77,6 @@ function toMatchPdfSnapshot(received) {
     switch (result.failureType) {
       case 'DiffPdfNotFound':
         throw new Error('Jest: diff-pdf is not available. Install diff-pdf from https://github.com/vslavik/diff-pdf');
-
-      case 'SourcePdfNotPresent':
-        throw new Error(`Jest: given path to \`.toMatchPdfSnapshot()\` is not present: ${received}`);
 
       case 'EmptySnapshot':
         message = () => (
