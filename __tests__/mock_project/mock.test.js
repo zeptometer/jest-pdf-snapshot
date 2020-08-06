@@ -1,15 +1,19 @@
 const { toMatchPdfSnapshot } = require('jest-pdf-snapshot');
+const fs = require('fs');
 
 expect.extend({ toMatchPdfSnapshot });
 
+const pdfBuffer1 = fs.readFileSync('../resources/test1.pdf');
+const pdfBuffer2 = fs.readFileSync('../resources/test2.pdf');
+
 test('Snapshot matches', () => {
-  expect('../resources/test1.pdf').toMatchPdfSnapshot();
+  expect(pdfBuffer1).toMatchPdfSnapshot();
 });
 
 test('Snapshot is absent', () => {
-  expect('../resources/test1.pdf').toMatchPdfSnapshot();
+  expect(pdfBuffer1).toMatchPdfSnapshot();
 });
 
 test('Snapshot is different', () => {
-  expect('../resources/test2.pdf').toMatchPdfSnapshot();
+  expect(pdfBuffer2).toMatchPdfSnapshot();
 });

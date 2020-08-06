@@ -17,7 +17,8 @@ const { toMatchPdfSnapshot } = require('jest-pdf-snapshot');
 expect.extend({ toMatchPdfSnapshot });
 
 test('Snapshot matches', () => {
-  expect('../resources/test1.pdf').toMatchPdfSnapshot();
+  const pdf = fs.readFileSync('../resources/test1.pdf');
+  expect(pdf).toMatchPdfSnapshot();
 });
 ```
 
@@ -28,8 +29,8 @@ Would give you following files:
 └── __tests__
     ├── pdf_snapshots
     │   ├── __diff_output__
-    |   |   └── pdf-snapshot-test-js-snapshot-is-different-1-diff.pdf 
-    |   |        (in case snapshot doesn't match) 
+    |   |   └── pdf-snapshot-test-js-snapshot-is-different-1-diff.pdf
+    |   |        (in case snapshot doesn't match)
     │   └── pdf-snapshot-test-js-snapshot-matches-1.pdf
     └── pdf-snapshot.test.js
 ```
