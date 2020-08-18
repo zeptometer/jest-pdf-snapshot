@@ -6,6 +6,8 @@ exports[`toMatchPdfSnapshot should fail when a new snapshot is added in ci 1`] =
  + This is likely because this test is run in a continuous integration (CI) environment in which snapshots are not written by default."
 `;
 
+exports[`toMatchPdfSnapshot should fail when received buffer is not pdf 1`] = `[Function]`;
+
 exports[`toMatchPdfSnapshot should fail when the acutual has a difference from the snapshot 1`] = `
 "Expected pdf to be same as the snapshot, but was different.
 [1m[31mSee diff for details:[39m[22m [31mpath/to/result.png[39m"

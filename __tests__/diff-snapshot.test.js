@@ -21,6 +21,11 @@ const mockTmp = {
 };
 jest.mock('tmp', () => mockTmp);
 
+const mockFileType = {
+  fromBuffer: jest.fn(),
+};
+jest.mock('file-type', () => mockFileType);
+
 const { diffPdfToSnapshot } = require('../src/diff-snapshot');
 
 describe('diffPdfToSnapshot', () => {
@@ -50,7 +55,7 @@ describe('diffPdfToSnapshot', () => {
 
     // When
     const result = diffPdfToSnapshot({
-      pdfPath: 'path/to/pdf',
+      pdfBuffer,
       snapshotDir: 'snapshotDir',
       snapshotIdentifier: 'snapshotIdentifier',
       updateSnapshot: false,
@@ -62,8 +67,48 @@ describe('diffPdfToSnapshot', () => {
     expect(result.failureType).toBe('DiffPdfNotFound');
   });
 
+  it('should fail when given object is not Buffer', () => {
+    // When
+    const result = diffPdfToSnapshot({
+      pdfBuffer: 'I am NOT a buffer',
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: false,
+      addSnapshot: true,
+    });
+
+    // Then
+    expect(result.pass).toBe(false);
+    expect(result.failureType).toBe('InvalidPdfBuffer');
+  });
+
+  it('should fail when given buffer is not pdf', () => {
+    // Given
+    mockFileType.fromBuffer.mockReturnValue({
+      ext: '.png',
+      mime: 'image/png',
+    });
+
+    // When
+    const result = diffPdfToSnapshot({
+      pdfBuffer,
+      snapshotDir: 'snapshotDir',
+      snapshotIdentifier: 'snapshotIdentifier',
+      updateSnapshot: false,
+      addSnapshot: true,
+    });
+
+    // Then
+    expect(result.pass).toBe(false);
+    expect(result.failureType).toBe('InvalidPdfBuffer');
+  });
+
   it('should override snapshot if updateSnapshot is true', () => {
     // Given
+    mockFileType.fromBuffer.mockReturnValue({
+      ext: '.pdf',
+      mime: 'application/pdf',
+    });
     const randomFd = 1121;
     mockFs.existsSync.mockReturnValue(false);
     mockFs.openSync.mockReturnValue(randomFd);
@@ -86,6 +131,10 @@ describe('diffPdfToSnapshot', () => {
 
   it('should copy pdf to snapshot when addSnapshot is true and snapshot does not exist', () => {
     // Given
+    mockFileType.fromBuffer.mockReturnValue({
+      ext: '.pdf',
+      mime: 'application/pdf',
+    });
     const randomFd = 1121;
     mockFs.existsSync.mockReturnValue(false);
     mockFs.openSync.mockReturnValue(randomFd);
@@ -109,6 +158,10 @@ describe('diffPdfToSnapshot', () => {
 
   it('should fail when addSnapthot is false and snapshot does not exist', () => {
     // Given
+    mockFileType.fromBuffer.mockReturnValue({
+      ext: '.pdf',
+      mime: 'application/pdf',
+    });
     mockFs.existsSync.mockReturnValueOnce(false);
 
     // When
@@ -128,6 +181,10 @@ describe('diffPdfToSnapshot', () => {
 
   it('should pass when given pdf is identical to snapshot', () => {
     // Given
+    mockFileType.fromBuffer.mockReturnValue({
+      ext: '.pdf',
+      mime: 'application/pdf',
+    });
     mockFs.existsSync.mockReturnValue(true);
     const tmpFileFd = 8837;
     const mockTmpRemoveCallback = jest.fn();
@@ -157,6 +214,10 @@ describe('diffPdfToSnapshot', () => {
 
   it('should create diff output path when not present', () => {
     // Given
+    mockFileType.fromBuffer.mockReturnValue({
+      ext: '.pdf',
+      mime: 'application/pdf',
+    });
     mockFs.existsSync.mockImplementation((path) => {
       switch (path) {
         case 'snapshotDir/snapshotIdentifier.pdf': return true;
@@ -168,7 +229,7 @@ describe('diffPdfToSnapshot', () => {
 
     // When
     diffPdfToSnapshot({
-      pdfPath: 'path/to/pdf',
+      pdfBuffer,
       snapshotDir: 'snapshotDir',
       snapshotIdentifier: 'snapshotIdentifier',
       updateSnapshot: undefined,
@@ -181,6 +242,10 @@ describe('diffPdfToSnapshot', () => {
 
   it('should give path to diff file when files are different', () => {
     // Given
+    mockFileType.fromBuffer.mockReturnValue({
+      ext: '.pdf',
+      mime: 'application/pdf',
+    });
     mockFs.existsSync.mockReturnValue(true);
     mockIsSamePdf.mockReturnValue(false);
     const tmpFileFd = 8837;
@@ -193,7 +258,7 @@ describe('diffPdfToSnapshot', () => {
 
     // When
     const result = diffPdfToSnapshot({
-      pdfPath: 'path/to/pdf',
+      pdfBuffer,
       snapshotDir: 'snapshotDir',
       snapshotIdentifier: 'snapshotIdentifier',
       updateSnapshot: undefined,

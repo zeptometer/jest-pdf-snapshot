@@ -1,5 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`jest-pdf-snapshot works as expected for error cases 1`] = `
+"[0m[7m[1m[32m PASS [39m[22m[27m[0m [2m./[22m[1merror.test.js[22m
+  [32m✓[39m [2mNot pdf buffer (??? ms)[22m
+
+[1m[32m › 1 snapshot written.[39m[22m
+[1mSnapshot Summary[22m
+[1m[32m › 1 snapshot written [39m[22mfrom 1 test suite.
+
+[1mTest Suites: [22m[1m[32m1 passed[39m[22m, 1 total
+[1mTests:       [22m[1m[32m1 passed[39m[22m, 1 total
+[1mSnapshots:   [22m[1m[32m1 written[39m[22m, 1 total
+[1mTime:[22m        ??? s
+[2mRan all test suites[22m[2m matching [22m/error.test.js/i[2m.[22m
+"
+`;
+
 exports[`jest-pdf-snapshot works as expected in ci 1`] = `
 "[0m[7m[1m[31m FAIL [39m[22m[27m[0m [2m./[22m[1mmock.test.js[22m
   [32m✓[39m [2mSnapshot matches (??? ms)[22m
@@ -43,8 +59,8 @@ exports[`jest-pdf-snapshot works as expected in ci 1`] = `
 [1mTest Suites: [22m[1m[31m1 failed[39m[22m, 1 total
 [1mTests:       [22m[1m[31m2 failed[39m[22m, [1m[32m1 passed[39m[22m, 3 total
 [1mSnapshots:   [22m[1m[31m2 failed[39m[22m, [1m[32m1 passed[39m[22m, 3 total
-[1mTime:[22m        ??? s
-[2mRan all test suites[22m[2m.[22m
+[1mTime:[22m        [1m[33m??? s[39m[22m
+[2mRan all test suites[22m[2m matching [22m/mock.test.js/i[2m.[22m
 [2K[1G[31merror[39m Command failed with exit code 1.
 "
 `;
@@ -79,7 +95,7 @@ exports[`jest-pdf-snapshot works as expected when local testing 1`] = `
 [1mTests:       [22m[1m[31m1 failed[39m[22m, [1m[32m2 passed[39m[22m, 3 total
 [1mSnapshots:   [22m[1m[31m1 failed[39m[22m, [1m[32m1 written[39m[22m, [1m[32m1 passed[39m[22m, 3 total
 [1mTime:[22m        ??? s
-[2mRan all test suites[22m[2m.[22m
+[2mRan all test suites[22m[2m matching [22m/mock.test.js/i[2m.[22m
 [2K[1G[31merror[39m Command failed with exit code 1.
 "
 `;
@@ -98,6 +114,6 @@ exports[`jest-pdf-snapshot works as expected when updating snapshot 1`] = `
 [1mTests:       [22m[1m[32m3 passed[39m[22m, 3 total
 [1mSnapshots:   [22m[1m[32m3 updated[39m[22m, 3 total
 [1mTime:[22m        ??? s
-[2mRan all test suites[22m[2m.[22m
+[2mRan all test suites[22m[2m matching [22m/mock.test.js/i[2m.[22m
 "
 `;

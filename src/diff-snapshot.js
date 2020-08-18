@@ -1,3 +1,4 @@
+const FileType = require('file-type');
 const fs = require('fs');
 const path = require('path');
 const shell = require('shelljs');
@@ -15,7 +16,17 @@ function defaultGenerateDiff(source, target, diffOutput) {
   return shell.exec(`diff-pdf --output-diff=${diffOutput} ${source} ${target}`);
 }
 
-function diffPdfToSnapshot({
+async function isPdfBuffer(obj) {
+  if (!Buffer.isBuffer(obj)) {
+    return false;
+  }
+
+  const fileType = await FileType.fromBuffer(obj);
+
+  return fileType.mime === 'application/pdf';
+}
+
+async function diffPdfToSnapshot({
   pdfBuffer,
   snapshotDir,
   snapshotIdentifier,
@@ -29,6 +40,13 @@ function diffPdfToSnapshot({
     return {
       pass: false,
       failureType: 'DiffPdfNotFound',
+    };
+  }
+
+  if (!await isPdfBuffer(pdfBuffer)) {
+    return {
+      pass: false,
+      failureType: 'InvalidPdfBuffer',
     };
   }
 

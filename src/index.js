@@ -78,6 +78,12 @@ function toMatchPdfSnapshot(received) {
       case 'DiffPdfNotFound':
         throw new Error('Jest: diff-pdf is not available. Install diff-pdf from https://github.com/vslavik/diff-pdf');
 
+      case 'InvalidPdfBuffer':
+        message = () => (
+          'Expected pdf buffer, but not'
+        );
+        break;
+
       case 'EmptySnapshot':
         message = () => (
           `New snapshot was ${chalk.bold.red('not written')}. The update flag must be explicitly `

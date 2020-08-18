@@ -105,6 +105,21 @@ describe('toMatchPdfSnapshot', () => {
     });
   });
 
+  it('should fail when received buffer is not pdf', () => {
+    mockDiffPdfToSnapshot.mockReturnValue({
+      pass: false,
+      failureType: 'InvalidPdfBuffer',
+    });
+
+    // When
+    const matcherAtTest = toMatchPdfSnapshot.bind(mockTestContext);
+    const result = matcherAtTest(pdfBuffer);
+
+    // Then
+    expect(result).toHaveProperty('pass', false);
+    expect(result.message).toMatchSnapshot();
+  });
+
   it('should fail when the acutual has a difference from the snapshot', () => {
     // Given
     mockDiffPdfToSnapshot.mockReturnValue({
@@ -123,13 +138,6 @@ describe('toMatchPdfSnapshot', () => {
     expect(result).toHaveProperty('pass', false);
     expect(result.message()).toMatchSnapshot();
     expect(mockTestContext.snapshotState).toHaveProperty('unmatched', 1);
-    expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
-      pdfBuffer,
-      snapshotDir: 'path/to/__pdf_snapshots__',
-      snapshotIdentifier: 'test-spec-js-test-1-1',
-      updateSnapshot: false,
-      addSnapshot: true,
-    });
   });
 
   it('attempts to update snapshots if snapshotState has updateSnapshot flag set', () => {
@@ -141,7 +149,6 @@ describe('toMatchPdfSnapshot', () => {
       pass: true,
       updated: true,
       added: false,
-      diffOutputPath: 'path/to/result.png',
     });
 
     // When
@@ -149,15 +156,15 @@ describe('toMatchPdfSnapshot', () => {
     const result = matcherAtTest(pdfBuffer);
 
     // Then
-    expect(result).toHaveProperty('pass', true);
-    expect(mockTestContext.snapshotState).toHaveProperty('updated', 1);
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
-      pdfBuffer,
-      snapshotDir: 'path/to/__pdf_snapshots__',
-      snapshotIdentifier: 'test-spec-js-test-1-1',
+      pdfBuffer: expect.anything(),
+      snapshotDir: expect.anything(),
+      snapshotIdentifier: expect.anything(),
       updateSnapshot: true,
       addSnapshot: true,
     });
+    expect(result).toHaveProperty('pass', true);
+    expect(mockTestContext.snapshotState).toHaveProperty('updated', 1);
   });
 
   it('should work when a new snapshot is added', () => {
@@ -166,7 +173,6 @@ describe('toMatchPdfSnapshot', () => {
       pass: true,
       updated: false,
       added: true,
-      diffOutputPath: 'path/to/result.png',
     });
 
     // When
@@ -174,15 +180,15 @@ describe('toMatchPdfSnapshot', () => {
     const result = matcherAtTest(pdfBuffer);
 
     // Then
-    expect(result).toHaveProperty('pass', true);
-    expect(mockTestContext.snapshotState).toHaveProperty('added', 1);
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
-      pdfBuffer,
-      snapshotDir: 'path/to/__pdf_snapshots__',
-      snapshotIdentifier: 'test-spec-js-test-1-1',
+      pdfBuffer: expect.anything(),
+      snapshotDir: expect.anything(),
+      snapshotIdentifier: expect.anything(),
       updateSnapshot: false,
       addSnapshot: true,
     });
+    expect(result).toHaveProperty('pass', true);
+    expect(mockTestContext.snapshotState).toHaveProperty('added', 1);
   });
 
   it('should fail when a new snapshot is added in ci', () => {
@@ -203,15 +209,15 @@ describe('toMatchPdfSnapshot', () => {
     const result = matcherAtTest(pdfBuffer);
 
     // Then
-    expect(result).toHaveProperty('pass', false);
-    expect(result.message()).toMatchSnapshot();
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
-      pdfBuffer,
-      snapshotDir: 'path/to/__pdf_snapshots__',
-      snapshotIdentifier: 'test-spec-js-test-1-1',
+      pdfBuffer: expect.anything(),
+      snapshotDir: expect.anything(),
+      snapshotIdentifier: expect.anything(),
       updateSnapshot: false,
       addSnapshot: false,
     });
+    expect(result).toHaveProperty('pass', false);
+    expect(result.message()).toMatchSnapshot();
   });
 
   it('should increment snapshot count when called multiple times', () => {
@@ -232,18 +238,18 @@ describe('toMatchPdfSnapshot', () => {
     // Then
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
       pdfBuffer,
-      snapshotDir: 'path/to/__pdf_snapshots__',
+      snapshotDir: expect.anything(),
       snapshotIdentifier: 'test-spec-js-test-1-1',
-      updateSnapshot: false,
-      addSnapshot: true,
+      updateSnapshot: expect.anything(),
+      addSnapshot: expect.anything(),
     });
 
     expect(mockDiffPdfToSnapshot).toHaveBeenCalledWith({
-      pdfBuffer: pdfBuffer2,
-      snapshotDir: 'path/to/__pdf_snapshots__',
+      pdfBuffer: expect.anything(),
+      snapshotDir: expect.anything(),
       snapshotIdentifier: 'test-spec-js-test-1-2',
-      updateSnapshot: false,
-      addSnapshot: true,
+      updateSnapshot: expect.anything(),
+      addSnapshot: expect.anything(),
     });
   });
 });
