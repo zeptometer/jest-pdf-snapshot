@@ -36,7 +36,7 @@ describe('jest-pdf-snapshot', () => {
   it('works as expected when local testing', () => {
     const result = shell.exec('yarn test');
 
-    expect(maskTime(result.stderr)).toMatchSnapshot();
+    expect(result.code).toBe(1);
     expect(fs.existsSync('__pdf_snapshots__/mock-test-js-snapshot-is-absent-1.pdf'))
       .toBeTruthy();
     expect(fs.existsSync('__pdf_snapshots__/__diff_output__/mock-test-js-snapshot-is-different-1-diff.pdf'))
@@ -51,7 +51,7 @@ describe('jest-pdf-snapshot', () => {
     const result = shell.exec('yarn test --update-snapshot');
 
 
-    expect(maskTime(result.stderr)).toMatchSnapshot();
+    expect(result.code).toBe(0);
     expect(fs.existsSync('__pdf_snapshots__/mock-test-js-snapshot-is-absent-1.pdf'))
       .toBeTruthy();
 
@@ -62,6 +62,6 @@ describe('jest-pdf-snapshot', () => {
   it('works as expected in ci', () => {
     const result = shell.exec('yarn test --ci');
 
-    expect(maskTime(result.stderr)).toMatchSnapshot();
+    expect(result.code).toBe(1);
   });
 });
