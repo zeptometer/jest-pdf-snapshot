@@ -13,15 +13,15 @@ jobs:
       - name: Run unit tests
         run: |
           yarn install
-          yarn test --ci --group=unit
-  integration-test:
-    name: Run integration tests
-    runs-on: ubuntu-latest
-    container:
-      image: zeptometer/node-diff-pdf:latest
-    steps:
-      - uses: actions/checkout@v1
-      - name: Run integration tests
-        run: |
-          yarn install
-          yarn test --ci --group=integration
+          yarn test --ci --group=unit --color
+  # integration-test:
+  #   name: Run integration tests
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: zeptometer/node-diff-pdf:latest
+  #   steps:
+  #     - uses: actions/checkout@v1
+  #     - name: Run integration tests
+  #       run: |
+  #         yarn install
+  #         yarn test --ci --group=integration
